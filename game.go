@@ -43,7 +43,15 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(colornames.Black)
 
 	op := &ebiten.DrawImageOptions{}
+
+	// first
+	op.GeoM.Reset()
 	op.GeoM.Translate(g.xpos, 10)
+	screen.DrawImage(g.gopher, op)
+
+	// second
+	op.GeoM.Reset()
+	op.GeoM.Translate(g.xpos, 40)
 	screen.DrawImage(g.gopher, op)
 
 	ebitenutil.DebugPrint(screen, g.title)
