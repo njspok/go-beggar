@@ -19,7 +19,7 @@ const (
 	Right
 )
 
-func NewGopher(left, right string) (*Gopher, error) {
+func NewGopher(left, right, back, front string) (*Gopher, error) {
 	leftImage, _, err := ebitenutil.NewImageFromFile(fmt.Sprintf("assets/%s", left))
 	if err != nil {
 		return nil, err
@@ -30,9 +30,21 @@ func NewGopher(left, right string) (*Gopher, error) {
 		return nil, err
 	}
 
+	backImage, _, err := ebitenutil.NewImageFromFile(fmt.Sprintf("assets/%s", back))
+	if err != nil {
+		return nil, err
+	}
+
+	frontImage, _, err := ebitenutil.NewImageFromFile(fmt.Sprintf("assets/%s", front))
+	if err != nil {
+		return nil, err
+	}
+
 	return &Gopher{
 		leftImage:  leftImage,
 		rightImage: rightImage,
+		backImage:  backImage,
+		frontImage: frontImage,
 		xpos:       0,
 		ypos:       0,
 		direction:  Right,
@@ -42,6 +54,8 @@ func NewGopher(left, right string) (*Gopher, error) {
 type Gopher struct {
 	leftImage  *ebiten.Image
 	rightImage *ebiten.Image
+	backImage  *ebiten.Image
+	frontImage *ebiten.Image
 	xpos       float64
 	ypos       float64
 	direction  Direction
@@ -77,8 +91,8 @@ func (g *Gopher) image() *ebiten.Image {
 	m := map[Direction]*ebiten.Image{
 		Right: g.rightImage,
 		Left:  g.leftImage,
-		Up:    g.leftImage, // todo
-		Down:  g.leftImage, // todo
+		Up:    g.backImage,
+		Down:  g.frontImage,
 	}
 	return m[g.direction]
 }
@@ -88,7 +102,12 @@ type Game struct {
 }
 
 func (g *Game) Init() error {
-	gopher, err := NewGopher("gopher-left.png", "gopher-right.png")
+	gopher, err := NewGopher(
+		"gopher-left.png",
+		"gopher-right.png",
+		"gopher-back.png",
+		"gopher-front.png",
+	)
 	if err != nil {
 		return err
 	}
