@@ -27,20 +27,17 @@ func (g *Game) Init() error {
 }
 
 func (g *Game) Update() error {
-	if inpututil.IsKeyJustPressed(ebiten.KeyRight) {
-		g.gopher.MoveRight()
+	keyMap := map[ebiten.Key]func(){
+		ebiten.KeyRight: g.gopher.MoveRight,
+		ebiten.KeyLeft:  g.gopher.MoveLeft,
+		ebiten.KeyDown:  g.gopher.MoveDown,
+		ebiten.KeyUp:    g.gopher.MoveUp,
 	}
 
-	if inpututil.IsKeyJustPressed(ebiten.KeyLeft) {
-		g.gopher.MoveLeft()
-	}
-
-	if inpututil.IsKeyJustPressed(ebiten.KeyUp) {
-		g.gopher.MoveUp()
-	}
-
-	if inpututil.IsKeyJustPressed(ebiten.KeyDown) {
-		g.gopher.MoveDown()
+	for key, action := range keyMap {
+		if inpututil.IsKeyJustPressed(key) {
+			action()
+		}
 	}
 
 	return nil
