@@ -11,7 +11,10 @@ func main() {
 	ebiten.SetWindowTitle("Hello, World!")
 
 	game := &Game{}
-	game.Init()
+	if err := game.Init(); err != nil {
+		log.Fatal(err)
+	}
+
 	if err := ebiten.RunGame(game); err != nil {
 		log.Fatal(err)
 	}
