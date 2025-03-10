@@ -80,9 +80,24 @@ func (g *Gopher) MoveUp() {
 	g.direction = Up
 	g.ypos -= step
 }
+
 func (g *Gopher) MoveDown() {
 	g.direction = Down
 	g.ypos += step
+}
+
+func (g *Gopher) Position() (x float64, y float64) {
+	x = g.xpos
+	y = g.ypos
+	return
+}
+
+func (g *Gopher) SetX(x float64) {
+	g.xpos = x
+}
+
+func (g *Gopher) SetY(y float64) {
+	g.ypos = y
 }
 
 func (g *Gopher) image() *ebiten.Image {
