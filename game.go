@@ -42,7 +42,7 @@ func (g *Game) Init() error {
 
 func (g *Game) Update() error {
 	g.handleKeys()
-	g.checkBorders()
+	g.checkSceneBorders()
 
 	return nil
 }
@@ -68,7 +68,7 @@ func (g *Game) handleKeys() {
 	}
 }
 
-func (g *Game) checkBorders() {
+func (g *Game) checkSceneBorders() {
 	x, y := g.gopher.Position()
 	if x <= 0 {
 		g.gopher.SetX(0)
