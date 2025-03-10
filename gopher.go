@@ -17,7 +17,7 @@ const (
 	Right
 )
 
-func NewGopher(left, right, back, front string) (*Gopher, error) {
+func NewGopher(left, right, back, front string, w, h float64) (*Gopher, error) {
 	leftImage, _, err := ebitenutil.NewImageFromFile(fmt.Sprintf("assets/%s", left))
 	if err != nil {
 		return nil, err
@@ -43,9 +43,11 @@ func NewGopher(left, right, back, front string) (*Gopher, error) {
 		rightImage: rightImage,
 		backImage:  backImage,
 		frontImage: frontImage,
+		direction:  Right,
 		xpos:       0,
 		ypos:       0,
-		direction:  Right,
+		width:      w,
+		height:     h,
 	}, nil
 }
 
@@ -57,6 +59,8 @@ type Gopher struct {
 	xpos       float64
 	ypos       float64
 	direction  Direction
+	width      float64
+	height     float64
 }
 
 func (g *Gopher) Draw(screen *ebiten.Image) {
@@ -86,6 +90,12 @@ func (g *Gopher) MoveDown() {
 	g.ypos += step
 }
 
+func (g *Gopher) EndPosition() (x float64, y float64) {
+	x = g.xpos + g.width
+	y = g.ypos + g.height
+	return
+}
+
 func (g *Gopher) Position() (x float64, y float64) {
 	x = g.xpos
 	y = g.ypos
@@ -98,6 +108,14 @@ func (g *Gopher) SetX(x float64) {
 
 func (g *Gopher) SetY(y float64) {
 	g.ypos = y
+}
+
+func (g *Gopher) Width() float64 {
+	return g.width
+}
+
+func (g *Gopher) Height() float64 {
+	return g.height
 }
 
 func (g *Gopher) image() *ebiten.Image {

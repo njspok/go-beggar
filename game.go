@@ -9,8 +9,8 @@ import (
 type Game struct {
 	gopher *Gopher
 	keyMap map[ebiten.Key]func()
-	width  int
-	height int
+	width  float64
+	height float64
 }
 
 func (g *Game) Init() error {
@@ -24,6 +24,7 @@ func (g *Game) Init() error {
 		"gopher-right.png",
 		"gopher-back.png",
 		"gopher-front.png",
+		128, 128,
 	)
 	if err != nil {
 		return err
@@ -52,7 +53,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return g.width, g.height
+	return int(g.width), int(g.height)
 }
 
 func (g *Game) addKeyAction(key ebiten.Key, action func()) {
@@ -72,8 +73,15 @@ func (g *Game) checkBorders() {
 	if x <= 0 {
 		g.gopher.SetX(0)
 	}
-
 	if y <= 0 {
 		g.gopher.SetY(0)
+	}
+
+	ex, ey := g.gopher.EndPosition()
+	if ex >= g.width {
+		g.gopher.SetX(g.width - g.gopher.Width())
+	}
+	if ey >= g.height {
+		g.gopher.SetY(g.height - g.gopher.Height())
 	}
 }
