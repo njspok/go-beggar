@@ -10,6 +10,15 @@ import (
 
 const step = 10
 
+type Direction int
+
+const (
+	Up Direction = iota
+	Down
+	Left
+	Right
+)
+
 func NewGopher(left, right string) (*Gopher, error) {
 	leftImage, _, err := ebitenutil.NewImageFromFile(fmt.Sprintf("assets/%s", left))
 	if err != nil {
@@ -26,6 +35,7 @@ func NewGopher(left, right string) (*Gopher, error) {
 		rightImage: rightImage,
 		xpos:       0,
 		ypos:       0,
+		direction:  Right,
 	}, nil
 }
 
@@ -34,28 +44,43 @@ type Gopher struct {
 	rightImage *ebiten.Image
 	xpos       float64
 	ypos       float64
+	direction  Direction
 }
 
 func (g *Gopher) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Reset()
 	op.GeoM.Translate(g.xpos, g.ypos)
-	screen.DrawImage(g.leftImage, op)
+	screen.DrawImage(g.image(), op)
 }
 
 func (g *Gopher) MoveLeft() {
+	g.direction = Left
 	g.xpos -= step
 }
 
 func (g *Gopher) MoveRight() {
+	g.direction = Right
 	g.xpos += step
 }
 
 func (g *Gopher) MoveUp() {
+	g.direction = Up
 	g.ypos -= step
 }
 func (g *Gopher) MoveDown() {
+	g.direction = Down
 	g.ypos += step
+}
+
+func (g *Gopher) image() *ebiten.Image {
+	m := map[Direction]*ebiten.Image{
+		Right: g.rightImage,
+		Left:  g.leftImage,
+		Up:    g.leftImage, // todo
+		Down:  g.leftImage, // todo
+	}
+	return m[g.direction]
 }
 
 type Game struct {
