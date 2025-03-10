@@ -8,9 +8,12 @@ import (
 
 type Game struct {
 	gopher *Gopher
+	keyMap map[ebiten.Key]func()
 }
 
 func (g *Game) Init() error {
+	g.keyMap = make(map[ebiten.Key]func())
+
 	gopher, err := NewGopher(
 		"gopher-left.png",
 		"gopher-right.png",
@@ -23,23 +26,16 @@ func (g *Game) Init() error {
 
 	g.gopher = gopher
 
+	g.addKeyAction(ebiten.KeyRight, g.gopher.MoveRight)
+	g.addKeyAction(ebiten.KeyLeft, g.gopher.MoveLeft)
+	g.addKeyAction(ebiten.KeyUp, g.gopher.MoveUp)
+	g.addKeyAction(ebiten.KeyDown, g.gopher.MoveDown)
+
 	return nil
 }
 
 func (g *Game) Update() error {
-	keyMap := map[ebiten.Key]func(){
-		ebiten.KeyRight: g.gopher.MoveRight,
-		ebiten.KeyLeft:  g.gopher.MoveLeft,
-		ebiten.KeyDown:  g.gopher.MoveDown,
-		ebiten.KeyUp:    g.gopher.MoveUp,
-	}
-
-	for key, action := range keyMap {
-		if inpututil.IsKeyJustPressed(key) {
-			action()
-		}
-	}
-
+	g.handleKeys()
 	return nil
 }
 
@@ -50,4 +46,16 @@ func (g *Game) Draw(screen *ebiten.Image) {
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
 	return 320, 240
+}
+
+func (g *Game) addKeyAction(key ebiten.Key, action func()) {
+	g.keyMap[key] = action
+}
+
+func (g *Game) handleKeys() {
+	for key, action := range g.keyMap {
+		if inpututil.IsKeyJustPressed(key) {
+			action()
+		}
+	}
 }
