@@ -6,6 +6,10 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
+func imagePath(name string) string {
+	return fmt.Sprintf("assets/%s", name)
+}
+
 const step = 10
 
 type Direction int
@@ -18,22 +22,22 @@ const (
 )
 
 func NewPlayer(left, right, back, front string, w, h float64) (*Player, error) {
-	leftImage, _, err := ebitenutil.NewImageFromFile(fmt.Sprintf("assets/%s", left))
+	leftImage, _, err := ebitenutil.NewImageFromFile(imagePath(left))
 	if err != nil {
 		return nil, err
 	}
 
-	rightImage, _, err := ebitenutil.NewImageFromFile(fmt.Sprintf("assets/%s", right))
+	rightImage, _, err := ebitenutil.NewImageFromFile(imagePath(right))
 	if err != nil {
 		return nil, err
 	}
 
-	backImage, _, err := ebitenutil.NewImageFromFile(fmt.Sprintf("assets/%s", back))
+	backImage, _, err := ebitenutil.NewImageFromFile(imagePath(back))
 	if err != nil {
 		return nil, err
 	}
 
-	frontImage, _, err := ebitenutil.NewImageFromFile(fmt.Sprintf("assets/%s", front))
+	frontImage, _, err := ebitenutil.NewImageFromFile(imagePath(front))
 	if err != nil {
 		return nil, err
 	}
@@ -52,13 +56,15 @@ func NewPlayer(left, right, back, front string, w, h float64) (*Player, error) {
 }
 
 type Player struct {
+	Object
+
 	leftImage  *ebiten.Image
 	rightImage *ebiten.Image
 	backImage  *ebiten.Image
 	frontImage *ebiten.Image
+	direction  Direction
 	xpos       float64
 	ypos       float64
-	direction  Direction
 	width      float64
 	height     float64
 }
