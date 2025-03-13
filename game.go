@@ -8,7 +8,7 @@ import (
 
 type Game struct {
 	player *Player
-	obj    *Object
+	objs   []*Object
 	keyMap map[ebiten.Key]func()
 	width  float64
 	height float64
@@ -32,12 +32,22 @@ func (g *Game) Init() error {
 	}
 	g.player = player
 
-	obj, err := NewObject("carrot.png", 128, 128)
-	if err != nil {
-		return err
+	objPos := []struct {
+		x float64
+		y float64
+	}{
+		{150, 150},
+		{300, 150},
+		{0, 300},
 	}
-	obj.SetPosition(150, 150)
-	g.obj = obj
+	for _, pos := range objPos {
+		obj, err := NewObject("carrot.png", 128, 128)
+		if err != nil {
+			return err
+		}
+		obj.SetPosition(pos.x, pos.y)
+		g.objs = append(g.objs, obj)
+	}
 
 	g.addKeyAction(ebiten.KeyRight, g.player.MoveRight)
 	g.addKeyAction(ebiten.KeyLeft, g.player.MoveLeft)
@@ -57,8 +67,10 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(colornames.Black)
+	for _, obj := range g.objs {
+		obj.Draw(screen)
+	}
 	g.player.Draw(screen)
-	g.obj.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -96,5 +108,7 @@ func (g *Game) checkSceneBorders() {
 }
 
 func (g *Game) checkCollision() {
-	g.obj.Collision(g.player)
+	for _, obj := range g.objs {
+		obj.Collision(g.player)
+	}
 }
