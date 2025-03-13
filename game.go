@@ -8,18 +8,19 @@ import (
 
 type Game struct {
 	player *Player
+	obj    *Object
 	keyMap map[ebiten.Key]func()
 	width  float64
 	height float64
 }
 
 func (g *Game) Init() error {
-	g.width = 320
-	g.height = 240
+	g.width = 640
+	g.height = 480
 
 	g.keyMap = make(map[ebiten.Key]func())
 
-	gopher, err := NewPlayer(
+	player, err := NewPlayer(
 		"gopher-left.png",
 		"gopher-right.png",
 		"gopher-back.png",
@@ -29,8 +30,14 @@ func (g *Game) Init() error {
 	if err != nil {
 		return err
 	}
+	g.player = player
 
-	g.player = gopher
+	obj, err := NewObject("carrot.png", 128, 128)
+	if err != nil {
+		return err
+	}
+	obj.SetPosition(150, 150)
+	g.obj = obj
 
 	g.addKeyAction(ebiten.KeyRight, g.player.MoveRight)
 	g.addKeyAction(ebiten.KeyLeft, g.player.MoveLeft)
@@ -43,6 +50,7 @@ func (g *Game) Init() error {
 func (g *Game) Update() error {
 	g.handleKeys()
 	g.checkSceneBorders()
+	g.checkCollision()
 
 	return nil
 }
@@ -50,6 +58,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(colornames.Black)
 	g.player.Draw(screen)
+	g.obj.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -84,4 +93,8 @@ func (g *Game) checkSceneBorders() {
 	if ey >= g.height {
 		g.player.SetY(g.height - g.player.Height())
 	}
+}
+
+func (g *Game) checkCollision() {
+	g.obj.Collision(g.player)
 }
