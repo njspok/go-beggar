@@ -7,7 +7,7 @@ import (
 )
 
 type Game struct {
-	gopher *Gopher
+	player *Player
 	keyMap map[ebiten.Key]func()
 	width  float64
 	height float64
@@ -19,7 +19,7 @@ func (g *Game) Init() error {
 
 	g.keyMap = make(map[ebiten.Key]func())
 
-	gopher, err := NewGopher(
+	gopher, err := NewPlayer(
 		"gopher-left.png",
 		"gopher-right.png",
 		"gopher-back.png",
@@ -30,12 +30,12 @@ func (g *Game) Init() error {
 		return err
 	}
 
-	g.gopher = gopher
+	g.player = gopher
 
-	g.addKeyAction(ebiten.KeyRight, g.gopher.MoveRight)
-	g.addKeyAction(ebiten.KeyLeft, g.gopher.MoveLeft)
-	g.addKeyAction(ebiten.KeyUp, g.gopher.MoveUp)
-	g.addKeyAction(ebiten.KeyDown, g.gopher.MoveDown)
+	g.addKeyAction(ebiten.KeyRight, g.player.MoveRight)
+	g.addKeyAction(ebiten.KeyLeft, g.player.MoveLeft)
+	g.addKeyAction(ebiten.KeyUp, g.player.MoveUp)
+	g.addKeyAction(ebiten.KeyDown, g.player.MoveDown)
 
 	return nil
 }
@@ -49,7 +49,7 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(colornames.Black)
-	g.gopher.Draw(screen)
+	g.player.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -69,19 +69,19 @@ func (g *Game) handleKeys() {
 }
 
 func (g *Game) checkSceneBorders() {
-	x, y := g.gopher.Position()
+	x, y := g.player.Position()
 	if x <= 0 {
-		g.gopher.SetX(0)
+		g.player.SetX(0)
 	}
 	if y <= 0 {
-		g.gopher.SetY(0)
+		g.player.SetY(0)
 	}
 
-	ex, ey := g.gopher.EndPosition()
+	ex, ey := g.player.EndPosition()
 	if ex >= g.width {
-		g.gopher.SetX(g.width - g.gopher.Width())
+		g.player.SetX(g.width - g.player.Width())
 	}
 	if ey >= g.height {
-		g.gopher.SetY(g.height - g.gopher.Height())
+		g.player.SetY(g.height - g.player.Height())
 	}
 }

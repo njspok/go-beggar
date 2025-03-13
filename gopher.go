@@ -17,7 +17,7 @@ const (
 	Right
 )
 
-func NewGopher(left, right, back, front string, w, h float64) (*Gopher, error) {
+func NewPlayer(left, right, back, front string, w, h float64) (*Player, error) {
 	leftImage, _, err := ebitenutil.NewImageFromFile(fmt.Sprintf("assets/%s", left))
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func NewGopher(left, right, back, front string, w, h float64) (*Gopher, error) {
 		return nil, err
 	}
 
-	return &Gopher{
+	return &Player{
 		leftImage:  leftImage,
 		rightImage: rightImage,
 		backImage:  backImage,
@@ -51,7 +51,7 @@ func NewGopher(left, right, back, front string, w, h float64) (*Gopher, error) {
 	}, nil
 }
 
-type Gopher struct {
+type Player struct {
 	leftImage  *ebiten.Image
 	rightImage *ebiten.Image
 	backImage  *ebiten.Image
@@ -63,62 +63,62 @@ type Gopher struct {
 	height     float64
 }
 
-func (g *Gopher) Draw(screen *ebiten.Image) {
+func (g *Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Reset()
 	op.GeoM.Translate(g.xpos, g.ypos)
 	screen.DrawImage(g.image(), op)
 }
 
-func (g *Gopher) MoveLeft() {
+func (g *Player) MoveLeft() {
 	g.direction = Left
 	g.xpos -= step
 }
 
-func (g *Gopher) MoveRight() {
+func (g *Player) MoveRight() {
 	g.direction = Right
 	g.xpos += step
 }
 
-func (g *Gopher) MoveUp() {
+func (g *Player) MoveUp() {
 	g.direction = Up
 	g.ypos -= step
 }
 
-func (g *Gopher) MoveDown() {
+func (g *Player) MoveDown() {
 	g.direction = Down
 	g.ypos += step
 }
 
-func (g *Gopher) EndPosition() (x float64, y float64) {
+func (g *Player) EndPosition() (x float64, y float64) {
 	x = g.xpos + g.width
 	y = g.ypos + g.height
 	return
 }
 
-func (g *Gopher) Position() (x float64, y float64) {
+func (g *Player) Position() (x float64, y float64) {
 	x = g.xpos
 	y = g.ypos
 	return
 }
 
-func (g *Gopher) SetX(x float64) {
+func (g *Player) SetX(x float64) {
 	g.xpos = x
 }
 
-func (g *Gopher) SetY(y float64) {
+func (g *Player) SetY(y float64) {
 	g.ypos = y
 }
 
-func (g *Gopher) Width() float64 {
+func (g *Player) Width() float64 {
 	return g.width
 }
 
-func (g *Gopher) Height() float64 {
+func (g *Player) Height() float64 {
 	return g.height
 }
 
-func (g *Gopher) image() *ebiten.Image {
+func (g *Player) image() *ebiten.Image {
 	m := map[Direction]*ebiten.Image{
 		Right: g.rightImage,
 		Left:  g.leftImage,
