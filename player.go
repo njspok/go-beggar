@@ -157,6 +157,10 @@ func (g *Player) Position() (x float64, y float64) {
 	return
 }
 
+func (p *Player) CenterPosition() (x float64, y float64) {
+	return p.xpos + p.width/2, p.ypos + p.height/2
+}
+
 func (g *Player) SetX(x float64) {
 	g.xpos = x
 }

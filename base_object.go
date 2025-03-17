@@ -47,16 +47,14 @@ func (o *BaseObject) SetPosition(x, y float64) {
 	o.ypos = y
 }
 
+func (o *BaseObject) CenterPosition() (float64, float64) {
+	return o.xpos + o.width/2, o.ypos + o.height/2
+}
+
 func (o *BaseObject) Distance(p *Player) float64 {
-	x1, y1 := p.Position()
-	w1 := p.Width()
-	h1 := p.Height()
-
-	x2, y2 := o.xpos, o.ypos
-	w2 := o.width
-	h2 := o.height
-
-	return Distance(x1, y1, w1, h1, x2, y2, w2, h2)
+	x1, y1 := p.CenterPosition()
+	x2, y2 := o.CenterPosition()
+	return Distance(x1, y1, x2, y2)
 }
 
 func (o *BaseObject) Hide() {
@@ -67,13 +65,8 @@ func (o *BaseObject) IsVisible() bool {
 	return o.visible
 }
 
-func Distance(x1, y1, w1, h1, x2, y2, w2, h2 float64) float64 {
-	cx1 := x1 + w1
-	cy1 := y1 + h1
-	cx2 := x2 + w2
-	cy2 := y2 + h2
-
-	return math.Sqrt(math.Pow(cx1-cx2, 2) + math.Pow(cy1-cy2, 2))
+func Distance(x1, y1, x2, y2 float64) float64 {
+	return math.Sqrt(math.Pow(x1-x2, 2) + math.Pow(y1-y2, 2))
 }
 
 func IsCollision(x1, y1, w1, h1, x2, y2, w2, h2 float64) bool {
