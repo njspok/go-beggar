@@ -35,7 +35,7 @@ func (g *Game) Init() error {
 		"gopher-back.png",
 		"gopher-front.png",
 		"gopher-sleep.png",
-		128, 128,
+		playerWidth, playerHeight,
 	)
 	if err != nil {
 		return err
@@ -51,7 +51,7 @@ func (g *Game) Init() error {
 		{0, 300},
 	}
 	for _, pos := range objPos {
-		obj, err := NewFood("carrot.png", 128, 128)
+		obj, err := NewFood("carrot.png", objectWidth, objectHeight)
 		if err != nil {
 			return err
 		}

@@ -9,6 +9,14 @@ import (
 const (
 	screenWidth  = 1024
 	screenHeight = 768
+
+	playerWidth  = 128
+	playerHeight = 128
+
+	objectWidth  = 128
+	objectHeight = 128
+
+	collisionDistance = 50
 )
 
 func main() {

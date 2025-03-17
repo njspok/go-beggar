@@ -16,7 +16,7 @@ type Food struct {
 }
 
 func (e *Food) Collision(p *Player) {
-	if e.Distance(p) < 50 {
+	if e.Distance(p) < collisionDistance {
 		if e.IsVisible() {
 			e.Hide()
 			p.AddPoint()
