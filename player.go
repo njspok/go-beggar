@@ -10,7 +10,10 @@ func imagePath(name string) string {
 	return fmt.Sprintf("assets/%s", name)
 }
 
-const step = 5
+const (
+	step        = 5
+	sleepPoints = 3
+)
 
 type Direction int
 
@@ -21,7 +24,14 @@ const (
 	Right
 )
 
-func NewPlayer(left, right, back, front string, w, h float64) (*Player, error) {
+type Satus int
+
+const (
+	Sleeping Satus = iota
+	Awake
+)
+
+func NewPlayer(left, right, back, front, sleep string, w, h float64) (*Player, error) {
 	leftImage, _, err := ebitenutil.NewImageFromFile(imagePath(left))
 	if err != nil {
 		return nil, err
@@ -42,16 +52,24 @@ func NewPlayer(left, right, back, front string, w, h float64) (*Player, error) {
 		return nil, err
 	}
 
+	sleepImage, _, err := ebitenutil.NewImageFromFile(imagePath(sleep))
+	if err != nil {
+		return nil, err
+	}
+
 	return &Player{
 		leftImage:  leftImage,
 		rightImage: rightImage,
 		backImage:  backImage,
 		frontImage: frontImage,
+		sleepImage: sleepImage,
 		direction:  Right,
 		xpos:       0,
 		ypos:       0,
 		width:      w,
 		height:     h,
+		status:     Awake,
+		points:     0,
 	}, nil
 }
 
@@ -62,11 +80,18 @@ type Player struct {
 	rightImage *ebiten.Image
 	backImage  *ebiten.Image
 	frontImage *ebiten.Image
-	direction  Direction
-	xpos       float64
-	ypos       float64
-	width      float64
-	height     float64
+	sleepImage *ebiten.Image
+
+	direction Direction
+
+	xpos   float64
+	ypos   float64
+	width  float64
+	height float64
+
+	status Satus
+
+	points int
 }
 
 func (g *Player) Draw(screen *ebiten.Image) {
@@ -77,21 +102,37 @@ func (g *Player) Draw(screen *ebiten.Image) {
 }
 
 func (g *Player) MoveLeft() {
+	if g.isCantMove() {
+		return
+	}
+
 	g.direction = Left
 	g.xpos -= step
 }
 
 func (g *Player) MoveRight() {
+	if g.isCantMove() {
+		return
+	}
+
 	g.direction = Right
 	g.xpos += step
 }
 
 func (g *Player) MoveUp() {
+	if g.isCantMove() {
+		return
+	}
+
 	g.direction = Up
 	g.ypos -= step
 }
 
 func (g *Player) MoveDown() {
+	if g.isCantMove() {
+		return
+	}
+
 	g.direction = Down
 	g.ypos += step
 }
@@ -124,7 +165,22 @@ func (g *Player) Height() float64 {
 	return g.height
 }
 
+func (g *Player) Sleep() {
+	g.status = Sleeping
+}
+
+func (g *Player) AddPoint() {
+	g.points++
+	if g.points == sleepPoints {
+		g.Sleep()
+	}
+}
+
 func (g *Player) image() *ebiten.Image {
+	if g.status == Sleeping {
+		return g.sleepImage
+	}
+
 	m := map[Direction]*ebiten.Image{
 		Right: g.rightImage,
 		Left:  g.leftImage,
@@ -132,4 +188,8 @@ func (g *Player) image() *ebiten.Image {
 		Down:  g.frontImage,
 	}
 	return m[g.direction]
+}
+
+func (g *Player) isCantMove() bool {
+	return g.status == Sleeping
 }

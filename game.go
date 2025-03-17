@@ -34,6 +34,7 @@ func (g *Game) Init() error {
 		"gopher-right.png",
 		"gopher-back.png",
 		"gopher-front.png",
+		"gopher-sleep.png",
 		128, 128,
 	)
 	if err != nil {

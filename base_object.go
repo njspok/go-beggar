@@ -63,6 +63,10 @@ func (o *BaseObject) Hide() {
 	o.visible = false
 }
 
+func (o *BaseObject) IsVisible() bool {
+	return o.visible
+}
+
 func Distance(x1, y1, w1, h1, x2, y2, w2, h2 float64) float64 {
 	cx1 := x1 + w1
 	cy1 := y1 + h1
