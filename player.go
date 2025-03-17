@@ -10,7 +10,7 @@ func imagePath(name string) string {
 	return fmt.Sprintf("assets/%s", name)
 }
 
-const step = 10
+const step = 5
 
 type Direction int
 

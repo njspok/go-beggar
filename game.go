@@ -83,7 +83,7 @@ func (g *Game) addKeyAction(key ebiten.Key, action func()) {
 
 func (g *Game) handleKeys() {
 	for key, action := range g.keyMap {
-		if inpututil.IsKeyJustPressed(key) {
+		if inpututil.KeyPressDuration(key) > 0 {
 			action()
 		}
 	}
