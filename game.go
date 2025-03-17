@@ -11,6 +11,13 @@ type Object interface {
 	Collision(player *Player)
 }
 
+func NewGame(w, h float64) *Game {
+	return &Game{
+		height: h,
+		width:  w,
+	}
+}
+
 type Game struct {
 	player *Player
 	objs   []Object
@@ -20,9 +27,6 @@ type Game struct {
 }
 
 func (g *Game) Init() error {
-	g.width = 640
-	g.height = 480
-
 	g.keyMap = make(map[ebiten.Key]func())
 
 	player, err := NewPlayer(

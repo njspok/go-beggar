@@ -6,11 +6,16 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+const (
+	screenWidth  = 1024
+	screenHeight = 768
+)
+
 func main() {
-	ebiten.SetWindowSize(640, 480)
+	ebiten.SetWindowSize(screenWidth, screenHeight)
 	ebiten.SetWindowTitle("Hello, World!")
 
-	game := &Game{}
+	game := NewGame(screenWidth, screenHeight)
 	if err := game.Init(); err != nil {
 		log.Fatal(err)
 	}
