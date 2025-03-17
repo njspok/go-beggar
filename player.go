@@ -29,9 +29,10 @@ type Satus int
 const (
 	Sleeping Satus = iota
 	Awake
+	Died
 )
 
-func NewPlayer(left, right, back, front, sleep string, w, h float64) (*Player, error) {
+func NewPlayer(left, right, back, front, sleep, die string, w, h float64) (*Player, error) {
 	leftImage, _, err := ebitenutil.NewImageFromFile(imagePath(left))
 	if err != nil {
 		return nil, err
@@ -57,12 +58,18 @@ func NewPlayer(left, right, back, front, sleep string, w, h float64) (*Player, e
 		return nil, err
 	}
 
+	dieImage, _, err := ebitenutil.NewImageFromFile(imagePath(die))
+	if err != nil {
+		return nil, err
+	}
+
 	return &Player{
 		leftImage:  leftImage,
 		rightImage: rightImage,
 		backImage:  backImage,
 		frontImage: frontImage,
 		sleepImage: sleepImage,
+		dieImage:   dieImage,
 		direction:  Right,
 		xpos:       0,
 		ypos:       0,
@@ -81,6 +88,7 @@ type Player struct {
 	backImage  *ebiten.Image
 	frontImage *ebiten.Image
 	sleepImage *ebiten.Image
+	dieImage   *ebiten.Image
 
 	direction Direction
 
@@ -169,6 +177,10 @@ func (g *Player) Sleep() {
 	g.status = Sleeping
 }
 
+func (g *Player) Die() {
+	g.status = Died
+}
+
 func (g *Player) AddPoint() {
 	g.points++
 	if g.points == sleepPoints {
@@ -177,19 +189,24 @@ func (g *Player) AddPoint() {
 }
 
 func (g *Player) image() *ebiten.Image {
-	if g.status == Sleeping {
-		return g.sleepImage
+	statusImages := map[Satus]*ebiten.Image{
+		Sleeping: g.sleepImage,
+		Died:     g.dieImage,
 	}
 
-	m := map[Direction]*ebiten.Image{
+	if i, ok := statusImages[g.status]; ok {
+		return i
+	}
+
+	directionImages := map[Direction]*ebiten.Image{
 		Right: g.rightImage,
 		Left:  g.leftImage,
 		Up:    g.backImage,
 		Down:  g.frontImage,
 	}
-	return m[g.direction]
+	return directionImages[g.direction]
 }
 
 func (g *Player) isCantMove() bool {
-	return g.status == Sleeping
+	return g.status == Sleeping || g.status == Died
 }

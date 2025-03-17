@@ -35,6 +35,7 @@ func (g *Game) Init() error {
 		"gopher-back.png",
 		"gopher-front.png",
 		"gopher-sleep.png",
+		"gopher-die.png",
 		playerWidth, playerHeight,
 	)
 	if err != nil {
@@ -58,6 +59,14 @@ func (g *Game) Init() error {
 		obj.SetPosition(pos.x, pos.y)
 		g.objs = append(g.objs, obj)
 	}
+
+	bomb, err := NewBomb("bomb.png", objectWidth, objectHeight)
+	if err != nil {
+		return err
+	}
+	bomb.SetPosition(300, 300)
+
+	g.objs = append(g.objs, bomb)
 
 	g.addKeyAction(ebiten.KeyRight, g.player.MoveRight)
 	g.addKeyAction(ebiten.KeyLeft, g.player.MoveLeft)
