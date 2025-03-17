@@ -6,9 +6,14 @@ import (
 	"golang.org/x/image/colornames"
 )
 
+type Object interface {
+	Draw(screen *ebiten.Image)
+	Collision(player *Player)
+}
+
 type Game struct {
 	player *Player
-	objs   []*Object
+	objs   []Object
 	keyMap map[ebiten.Key]func()
 	width  float64
 	height float64
@@ -41,7 +46,7 @@ func (g *Game) Init() error {
 		{0, 300},
 	}
 	for _, pos := range objPos {
-		obj, err := NewObject("carrot.png", 128, 128)
+		obj, err := NewEat("carrot.png", 128, 128)
 		if err != nil {
 			return err
 		}

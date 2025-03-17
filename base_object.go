@@ -6,13 +6,13 @@ import (
 	"math"
 )
 
-func NewObject(image string, w, h float64) (*Object, error) {
+func NewBaseObject(image string, w, h float64) (*BaseObject, error) {
 	img, _, err := ebitenutil.NewImageFromFile(imagePath(image))
 	if err != nil {
 		return nil, err
 	}
 
-	return &Object{
+	return &BaseObject{
 		image:   img,
 		xpos:    0,
 		ypos:    0,
@@ -22,7 +22,7 @@ func NewObject(image string, w, h float64) (*Object, error) {
 	}, nil
 }
 
-type Object struct {
+type BaseObject struct {
 	image   *ebiten.Image
 	xpos    float64
 	ypos    float64
@@ -31,7 +31,7 @@ type Object struct {
 	visible bool
 }
 
-func (o *Object) Draw(screen *ebiten.Image) {
+func (o *BaseObject) Draw(screen *ebiten.Image) {
 	if !o.visible {
 		return
 	}
@@ -42,12 +42,12 @@ func (o *Object) Draw(screen *ebiten.Image) {
 	screen.DrawImage(o.image, op)
 }
 
-func (o *Object) SetPosition(x, y float64) {
+func (o *BaseObject) SetPosition(x, y float64) {
 	o.xpos = x
 	o.ypos = y
 }
 
-func (o *Object) Collision(p *Player) {
+func (o *BaseObject) Distance(p *Player) float64 {
 	x1, y1 := p.Position()
 	w1 := p.Width()
 	h1 := p.Height()
@@ -56,9 +56,11 @@ func (o *Object) Collision(p *Player) {
 	w2 := o.width
 	h2 := o.height
 
-	if Distance(x1, y1, w1, h1, x2, y2, w2, h2) < 50 {
-		o.visible = false
-	}
+	return Distance(x1, y1, w1, h1, x2, y2, w2, h2)
+}
+
+func (o *BaseObject) Hide() {
+	o.visible = false
 }
 
 func Distance(x1, y1, w1, h1, x2, y2, w2, h2 float64) float64 {
