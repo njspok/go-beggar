@@ -46,7 +46,7 @@ func (g *Game) Init() error {
 		{0, 300},
 	}
 	for _, pos := range objPos {
-		obj, err := NewEat("carrot.png", 128, 128)
+		obj, err := NewFood("carrot.png", 128, 128)
 		if err != nil {
 			return err
 		}

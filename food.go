@@ -1,21 +1,21 @@
 package main
 
-func NewEat(image string, w, h float64) (*Eat, error) {
+func NewFood(image string, w, h float64) (*Food, error) {
 	obj, err := NewBaseObject(image, w, h)
 	if err != nil {
 		return nil, err
 	}
 
-	return &Eat{
+	return &Food{
 		BaseObject: obj,
 	}, nil
 }
 
-type Eat struct {
+type Food struct {
 	*BaseObject
 }
 
-func (e *Eat) Collision(p *Player) {
+func (e *Food) Collision(p *Player) {
 	if e.Distance(p) < 50 {
 		e.Hide()
 	}
