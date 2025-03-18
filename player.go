@@ -183,16 +183,6 @@ func (p *Player) CenterPosition() (x float64, y float64) {
 	return p.xpos + p.width/2, p.ypos + p.height/2
 }
 
-// DEPRECATED
-func (p *Player) SetX(x float64) {
-	p.xpos = x
-}
-
-// DEPRECATED
-func (p *Player) SetY(y float64) {
-	p.ypos = y
-}
-
 func (p *Player) Width() float64 {
 	return p.width
 }
