@@ -6,6 +6,10 @@
 
 ## Запуск
 
+Используется движок github.com/hajimehoshi/ebiten/v2. 
+
+Поэтому инструкции для установки необходимых библиотек для движка [тут](https://ebitengine.org/en/documents/install.html).
+
 ```shell
 # go build
 # ./go-beggar
