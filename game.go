@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"golang.org/x/image/colornames"
@@ -9,6 +10,7 @@ import (
 type Object interface {
 	Draw(screen *ebiten.Image)
 	Collision(player *Player)
+	SetPosition(x, y float64)
 }
 
 func NewGame(w, h float64) *Game {
@@ -43,30 +45,40 @@ func (g *Game) Init() error {
 	}
 	g.player = player
 
+	// carrots
 	objPos := []struct {
+		t string
 		x float64
 		y float64
 	}{
-		{150, 150},
-		{300, 150},
-		{0, 300},
+		{"carrot", 150, 150},
+		{"carrot", 300, 150},
+		{"carrot", 0, 300},
+		{"bomb", 300, 300},
+		{"rock", 300, 50},
 	}
 	for _, pos := range objPos {
-		obj, err := NewFood("carrot.png", objectWidth, objectHeight)
+		var obj Object
+		var err error
+
+		switch pos.t {
+		case "carrot":
+			obj, err = NewFood(pos.t+".png", objectWidth, objectHeight)
+		case "bomb":
+			obj, err = NewBomb(pos.t+".png", objectWidth, objectHeight)
+		case "rock":
+			obj, err = NewRock(pos.t+".png", objectWidth, objectHeight)
+		default:
+			return errors.New("invalid type object")
+		}
+
 		if err != nil {
 			return err
 		}
+
 		obj.SetPosition(pos.x, pos.y)
 		g.objs = append(g.objs, obj)
 	}
-
-	bomb, err := NewBomb("bomb.png", objectWidth, objectHeight)
-	if err != nil {
-		return err
-	}
-	bomb.SetPosition(300, 300)
-
-	g.objs = append(g.objs, bomb)
 
 	g.addKeyAction(ebiten.KeyRight, g.player.MoveRight)
 	g.addKeyAction(ebiten.KeyLeft, g.player.MoveLeft)
@@ -110,19 +122,13 @@ func (g *Game) handleKeys() {
 
 func (g *Game) checkSceneBorders() {
 	x, y := g.player.Position()
-	if x <= 0 {
-		g.player.SetX(0)
-	}
-	if y <= 0 {
-		g.player.SetY(0)
+	if x < 0 || y < 0 {
+		g.player.StepBack()
 	}
 
 	ex, ey := g.player.EndPosition()
-	if ex >= g.width {
-		g.player.SetX(g.width - g.player.Width())
-	}
-	if ey >= g.height {
-		g.player.SetY(g.height - g.player.Height())
+	if ex > g.width || ey > g.height {
+		g.player.StepBack()
 	}
 }
 

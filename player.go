@@ -73,6 +73,8 @@ func NewPlayer(left, right, back, front, sleep, die string, w, h float64) (*Play
 		direction:  Right,
 		xpos:       0,
 		ypos:       0,
+		prevX:      0,
+		prevY:      0,
 		width:      w,
 		height:     h,
 		status:     Awake,
@@ -92,8 +94,11 @@ type Player struct {
 
 	direction Direction
 
-	xpos   float64
-	ypos   float64
+	xpos  float64
+	ypos  float64
+	prevX float64
+	prevY float64
+
 	width  float64
 	height float64
 
@@ -102,115 +107,134 @@ type Player struct {
 	points int
 }
 
-func (g *Player) Draw(screen *ebiten.Image) {
+func (p *Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Reset()
-	op.GeoM.Translate(g.xpos, g.ypos)
-	screen.DrawImage(g.image(), op)
+	op.GeoM.Translate(p.xpos, p.ypos)
+	screen.DrawImage(p.image(), op)
 }
 
-func (g *Player) MoveLeft() {
-	if g.isCantMove() {
+func (p *Player) MoveLeft() {
+	if p.isCantMove() {
 		return
 	}
 
-	g.direction = Left
-	g.xpos -= step
+	p.direction = Left
+	p.prevX = p.xpos
+	p.xpos -= step
 }
 
-func (g *Player) MoveRight() {
-	if g.isCantMove() {
+func (p *Player) MoveRight() {
+	if p.isCantMove() {
 		return
 	}
 
-	g.direction = Right
-	g.xpos += step
+	p.direction = Right
+	p.prevX = p.xpos
+	p.xpos += step
 }
 
-func (g *Player) MoveUp() {
-	if g.isCantMove() {
+func (p *Player) MoveUp() {
+	if p.isCantMove() {
 		return
 	}
 
-	g.direction = Up
-	g.ypos -= step
+	p.direction = Up
+	p.prevY = p.ypos
+	p.ypos -= step
 }
 
-func (g *Player) MoveDown() {
-	if g.isCantMove() {
+func (p *Player) MoveDown() {
+	if p.isCantMove() {
 		return
 	}
 
-	g.direction = Down
-	g.ypos += step
+	p.direction = Down
+	p.prevY = p.ypos
+	p.ypos += step
 }
 
-func (g *Player) EndPosition() (x float64, y float64) {
-	x = g.xpos + g.width
-	y = g.ypos + g.height
+func (p *Player) StepBack() {
+	if p.isCantMove() {
+		return
+	}
+
+	p.xpos = p.prevX
+	p.ypos = p.prevY
+}
+
+func (p *Player) EndPosition() (x float64, y float64) {
+	x = p.xpos + p.width
+	y = p.ypos + p.height
 	return
 }
 
-func (g *Player) Position() (x float64, y float64) {
-	x = g.xpos
-	y = g.ypos
+func (p *Player) Position() (x float64, y float64) {
+	x = p.xpos
+	y = p.ypos
 	return
+}
+
+func (p *Player) Size() (w, h float64) {
+	return p.width, p.height
 }
 
 func (p *Player) CenterPosition() (x float64, y float64) {
 	return p.xpos + p.width/2, p.ypos + p.height/2
 }
 
-func (g *Player) SetX(x float64) {
-	g.xpos = x
+// DEPRECATED
+func (p *Player) SetX(x float64) {
+	p.xpos = x
 }
 
-func (g *Player) SetY(y float64) {
-	g.ypos = y
+// DEPRECATED
+func (p *Player) SetY(y float64) {
+	p.ypos = y
 }
 
-func (g *Player) Width() float64 {
-	return g.width
+func (p *Player) Width() float64 {
+	return p.width
 }
 
-func (g *Player) Height() float64 {
-	return g.height
+func (p *Player) Height() float64 {
+	return p.height
 }
 
-func (g *Player) Sleep() {
-	g.status = Sleeping
+func (p *Player) Sleep() {
+	p.status = Sleeping
 }
 
-func (g *Player) Die() {
-	g.status = Died
+func (p *Player) Die() {
+	p.status = Died
 }
 
-func (g *Player) AddPoint() {
-	g.points++
-	if g.points == sleepPoints {
-		g.Sleep()
+func (p *Player) AddPoint() {
+	p.points++
+	if p.points == sleepPoints {
+		p.Sleep()
 	}
 }
 
-func (g *Player) image() *ebiten.Image {
+func (p *Player) image() *ebiten.Image {
 	statusImages := map[Satus]*ebiten.Image{
-		Sleeping: g.sleepImage,
-		Died:     g.dieImage,
+		Sleeping: p.sleepImage,
+		Died:     p.dieImage,
 	}
 
-	if i, ok := statusImages[g.status]; ok {
+	if i, ok := statusImages[p.status]; ok {
 		return i
 	}
 
 	directionImages := map[Direction]*ebiten.Image{
-		Right: g.rightImage,
-		Left:  g.leftImage,
-		Up:    g.backImage,
-		Down:  g.frontImage,
+		Right: p.rightImage,
+		Left:  p.leftImage,
+		Up:    p.backImage,
+		Down:  p.frontImage,
 	}
-	return directionImages[g.direction]
+	return directionImages[p.direction]
 }
 
-func (g *Player) isCantMove() bool {
-	return g.status == Sleeping || g.status == Died
+func (p *Player) isCantMove() bool {
+	return p.status == Sleeping || p.status == Died
 }
