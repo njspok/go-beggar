@@ -134,7 +134,7 @@ func (g *Game) Update() error {
 	g.handleKeys()
 	g.checkSceneBorders()
 	g.checkCollision()
-	g.checkGameOver()
+	g.checkGameFinish()
 
 	return nil
 }
@@ -198,7 +198,7 @@ func (g *Game) assignKeys() error {
 	return nil
 }
 
-func (g *Game) checkGameOver() {
+func (g *Game) checkGameFinish() {
 	switch {
 	case g.player.IsDied():
 		g.status = GameOver
