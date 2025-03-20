@@ -31,6 +31,8 @@ type ObjectConfig struct {
 	Type string
 	X    float64
 	Y    float64
+	W    float64
+	H    float64
 }
 
 type Config struct {
@@ -65,11 +67,11 @@ func NewGame(config Config) (*Game, error) {
 
 		switch pos.Type {
 		case "food":
-			obj, err = NewFood(pos.Type+".png", objectWidth, objectHeight)
+			obj, err = NewFood(pos.Type+".png", pos.W, pos.H)
 		case "bomb":
-			obj, err = NewBomb(pos.Type+".png", objectWidth, objectHeight)
+			obj, err = NewBomb(pos.Type+".png", pos.W, pos.H)
 		case "rock":
-			obj, err = NewRock(pos.Type+".png", objectWidth, objectHeight)
+			obj, err = NewRock(pos.Type+".png", pos.W, pos.H)
 		default:
 			return nil, errors.New("invalid type object")
 		}

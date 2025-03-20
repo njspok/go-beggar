@@ -1,5 +1,7 @@
 package main
 
+const collisionDistance = 50
+
 func NewBomb(image string, w, h float64) (*Bomb, error) {
 	obj, err := NewBaseObject(image, w, h)
 	if err != nil {

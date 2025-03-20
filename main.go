@@ -15,8 +15,6 @@ const (
 
 	objectWidth  = 128
 	objectHeight = 128
-
-	collisionDistance = 50
 )
 
 func main() {
@@ -36,11 +34,11 @@ func main() {
 			},
 		},
 		Objects: []ObjectConfig{
-			{Type: "food", X: 150, Y: 150},
-			{Type: "food", X: 300, Y: 150},
-			{Type: "food", X: 0, Y: 300},
-			{Type: "bomb", X: 300, Y: 300},
-			{Type: "rock", X: 300, Y: 50},
+			{Type: "food", X: 150, Y: 150, W: objectWidth, H: objectHeight},
+			{Type: "food", X: 300, Y: 150, W: objectWidth, H: objectHeight},
+			{Type: "food", X: 0, Y: 300, W: objectWidth, H: objectHeight},
+			{Type: "bomb", X: 300, Y: 300, W: objectWidth, H: objectHeight},
+			{Type: "rock", X: 300, Y: 50, W: objectWidth, H: objectHeight},
 		},
 	})
 	if err != nil {
