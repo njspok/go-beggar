@@ -45,6 +45,14 @@ type Config struct {
 	Objects []ObjectConfig
 }
 
+type GameStatus int
+
+const (
+	GameRunning GameStatus = iota
+	GameOver
+	GameWin
+)
+
 func NewGame(config Config) (*Game, error) {
 	ebiten.SetWindowTitle("Hello, World!")
 	ebiten.SetWindowSize(int(config.Width), int(config.Height))
@@ -95,13 +103,13 @@ func NewGame(config Config) (*Game, error) {
 	font, err := text.NewGoTextFaceSource(bytes.NewReader(f))
 
 	g := &Game{
-		height:     config.Height,
-		width:      config.Width,
-		keyMap:     make(map[ebiten.Key]func()),
-		player:     player,
-		objs:       objs,
-		isGameOver: false,
-		font:       font,
+		height: config.Height,
+		width:  config.Width,
+		keyMap: make(map[ebiten.Key]func()),
+		player: player,
+		objs:   objs,
+		status: GameRunning,
+		font:   font,
 	}
 
 	err = g.assignKeys()
@@ -113,13 +121,13 @@ func NewGame(config Config) (*Game, error) {
 }
 
 type Game struct {
-	player     *Player
-	objs       []Object
-	keyMap     map[ebiten.Key]func()
-	width      float64
-	height     float64
-	isGameOver bool
-	font       *text.GoTextFaceSource
+	player *Player
+	objs   []Object
+	keyMap map[ebiten.Key]func()
+	width  float64
+	height float64
+	font   *text.GoTextFaceSource
+	status GameStatus
 }
 
 func (g *Game) Update() error {
@@ -138,8 +146,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 	g.player.Draw(screen)
 
-	if g.isGameOver {
+	switch g.status {
+	case GameRunning:
+	case GameOver:
 		g.printMessage(screen, "GAME OVER")
+	case GameWin:
+		g.printMessage(screen, "GAME WIN")
 	}
 }
 
@@ -187,8 +199,11 @@ func (g *Game) assignKeys() error {
 }
 
 func (g *Game) checkGameOver() {
-	if g.player.IsDied() || g.player.IsSleep() {
-		g.isGameOver = true
+	switch {
+	case g.player.IsDied():
+		g.status = GameOver
+	case g.player.IsSleep():
+		g.status = GameWin
 	}
 }
 
