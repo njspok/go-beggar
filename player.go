@@ -24,10 +24,10 @@ const (
 	Right
 )
 
-type Satus int
+type PlayerStatus int
 
 const (
-	Sleeping Satus = iota
+	Sleeping PlayerStatus = iota
 	Awake
 	Died
 )
@@ -102,7 +102,7 @@ type Player struct {
 	width  float64
 	height float64
 
-	status Satus
+	status PlayerStatus
 
 	points int
 }
@@ -215,7 +215,7 @@ func (p *Player) AddPoint() {
 }
 
 func (p *Player) image() *ebiten.Image {
-	statusImages := map[Satus]*ebiten.Image{
+	statusImages := map[PlayerStatus]*ebiten.Image{
 		Sleeping: p.sleepImage,
 		Died:     p.dieImage,
 	}
