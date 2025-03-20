@@ -199,6 +199,14 @@ func (p *Player) Die() {
 	p.status = Died
 }
 
+func (p *Player) IsSleep() bool {
+	return p.status == Sleeping
+}
+
+func (p *Player) IsDied() bool {
+	return p.status == Died
+}
+
 func (p *Player) AddPoint() {
 	p.points++
 	if p.points == sleepPoints {

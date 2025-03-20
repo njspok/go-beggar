@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"errors"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"golang.org/x/image/colornames"
+	"os"
 )
 
 type Object interface {
@@ -84,12 +87,21 @@ func NewGame(config Config) (*Game, error) {
 		objs = append(objs, obj)
 	}
 
+	f, err := os.ReadFile("assets/mplus-1p-regular.ttf")
+	if err != nil {
+		return nil, err
+	}
+
+	font, err := text.NewGoTextFaceSource(bytes.NewReader(f))
+
 	g := &Game{
-		height: config.Height,
-		width:  config.Width,
-		keyMap: make(map[ebiten.Key]func()),
-		player: player,
-		objs:   objs,
+		height:     config.Height,
+		width:      config.Width,
+		keyMap:     make(map[ebiten.Key]func()),
+		player:     player,
+		objs:       objs,
+		isGameOver: false,
+		font:       font,
 	}
 
 	err = g.assignKeys()
@@ -101,17 +113,20 @@ func NewGame(config Config) (*Game, error) {
 }
 
 type Game struct {
-	player *Player
-	objs   []Object
-	keyMap map[ebiten.Key]func()
-	width  float64
-	height float64
+	player     *Player
+	objs       []Object
+	keyMap     map[ebiten.Key]func()
+	width      float64
+	height     float64
+	isGameOver bool
+	font       *text.GoTextFaceSource
 }
 
 func (g *Game) Update() error {
 	g.handleKeys()
 	g.checkSceneBorders()
 	g.checkCollision()
+	g.checkGameOver()
 
 	return nil
 }
@@ -122,6 +137,10 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		obj.Draw(screen)
 	}
 	g.player.Draw(screen)
+
+	if g.isGameOver {
+		g.printMessage(screen, "GAME OVER")
+	}
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
@@ -165,4 +184,19 @@ func (g *Game) assignKeys() error {
 	g.addKeyAction(ebiten.KeyDown, g.player.MoveDown)
 
 	return nil
+}
+
+func (g *Game) checkGameOver() {
+	if g.player.IsDied() || g.player.IsSleep() {
+		g.isGameOver = true
+	}
+}
+
+func (g *Game) printMessage(screen *ebiten.Image, str string) {
+	op := &text.DrawOptions{}
+	op.GeoM.Translate(g.width/2, g.height/2)
+	text.Draw(screen, str, &text.GoTextFace{
+		Source: g.font,
+		Size:   24,
+	}, op)
 }
