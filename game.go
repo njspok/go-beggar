@@ -103,15 +103,6 @@ type Game struct {
 	height float64
 }
 
-func (g *Game) assignKeys() error {
-	g.addKeyAction(ebiten.KeyRight, g.player.MoveRight)
-	g.addKeyAction(ebiten.KeyLeft, g.player.MoveLeft)
-	g.addKeyAction(ebiten.KeyUp, g.player.MoveUp)
-	g.addKeyAction(ebiten.KeyDown, g.player.MoveDown)
-
-	return nil
-}
-
 func (g *Game) Update() error {
 	g.handleKeys()
 	g.checkSceneBorders()
@@ -160,4 +151,13 @@ func (g *Game) checkCollision() {
 	for _, obj := range g.objs {
 		obj.Collision(g.player)
 	}
+}
+
+func (g *Game) assignKeys() error {
+	g.addKeyAction(ebiten.KeyRight, g.player.MoveRight)
+	g.addKeyAction(ebiten.KeyLeft, g.player.MoveLeft)
+	g.addKeyAction(ebiten.KeyUp, g.player.MoveUp)
+	g.addKeyAction(ebiten.KeyDown, g.player.MoveDown)
+
+	return nil
 }
