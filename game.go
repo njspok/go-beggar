@@ -13,11 +13,86 @@ type Object interface {
 	SetPosition(x, y float64)
 }
 
-func NewGame(w, h float64) *Game {
-	return &Game{
-		height: h,
-		width:  w,
+type PlayerImagesConfig struct {
+	Left  string
+	Right string
+	Back  string
+	Front string
+	Sleep string
+	Die   string
+}
+
+type PlayerConfig struct {
+	Width, Height float64
+	Images        PlayerImagesConfig
+}
+
+type ObjectConfig struct {
+	Type string
+	X    float64
+	Y    float64
+}
+
+type Config struct {
+	Width   float64
+	Height  float64
+	Player  PlayerConfig
+	Objects []ObjectConfig
+}
+
+func NewGame(config Config) (*Game, error) {
+	player, err := NewPlayer(
+		config.Player.Images.Left,
+		config.Player.Images.Right,
+		config.Player.Images.Back,
+		config.Player.Images.Front,
+		config.Player.Images.Sleep,
+		config.Player.Images.Die,
+		config.Player.Width,
+		config.Player.Height,
+	)
+	if err != nil {
+		return nil, err
 	}
+
+	var objs []Object
+	for _, pos := range config.Objects {
+		var obj Object
+		var err error
+
+		switch pos.Type {
+		case "food":
+			obj, err = NewFood(pos.Type+".png", objectWidth, objectHeight)
+		case "bomb":
+			obj, err = NewBomb(pos.Type+".png", objectWidth, objectHeight)
+		case "rock":
+			obj, err = NewRock(pos.Type+".png", objectWidth, objectHeight)
+		default:
+			return nil, errors.New("invalid type object")
+		}
+
+		if err != nil {
+			return nil, err
+		}
+
+		obj.SetPosition(pos.X, pos.Y)
+		objs = append(objs, obj)
+	}
+
+	g := &Game{
+		height: config.Height,
+		width:  config.Width,
+		keyMap: make(map[ebiten.Key]func()),
+		player: player,
+		objs:   objs,
+	}
+
+	err = g.assignKeys()
+	if err != nil {
+		return nil, err
+	}
+
+	return g, nil
 }
 
 type Game struct {
@@ -28,58 +103,7 @@ type Game struct {
 	height float64
 }
 
-func (g *Game) Init() error {
-	g.keyMap = make(map[ebiten.Key]func())
-
-	player, err := NewPlayer(
-		"gopher-left.png",
-		"gopher-right.png",
-		"gopher-back.png",
-		"gopher-front.png",
-		"gopher-sleep.png",
-		"gopher-die.png",
-		playerWidth, playerHeight,
-	)
-	if err != nil {
-		return err
-	}
-	g.player = player
-
-	// carrots
-	objPos := []struct {
-		t string
-		x float64
-		y float64
-	}{
-		{"carrot", 150, 150},
-		{"carrot", 300, 150},
-		{"carrot", 0, 300},
-		{"bomb", 300, 300},
-		{"rock", 300, 50},
-	}
-	for _, pos := range objPos {
-		var obj Object
-		var err error
-
-		switch pos.t {
-		case "carrot":
-			obj, err = NewFood(pos.t+".png", objectWidth, objectHeight)
-		case "bomb":
-			obj, err = NewBomb(pos.t+".png", objectWidth, objectHeight)
-		case "rock":
-			obj, err = NewRock(pos.t+".png", objectWidth, objectHeight)
-		default:
-			return errors.New("invalid type object")
-		}
-
-		if err != nil {
-			return err
-		}
-
-		obj.SetPosition(pos.x, pos.y)
-		g.objs = append(g.objs, obj)
-	}
-
+func (g *Game) assignKeys() error {
 	g.addKeyAction(ebiten.KeyRight, g.player.MoveRight)
 	g.addKeyAction(ebiten.KeyLeft, g.player.MoveLeft)
 	g.addKeyAction(ebiten.KeyUp, g.player.MoveUp)
