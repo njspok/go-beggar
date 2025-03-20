@@ -20,9 +20,6 @@ const (
 )
 
 func main() {
-	ebiten.SetWindowSize(screenWidth, screenHeight)
-	ebiten.SetWindowTitle("Hello, World!")
-
 	game, err := NewGame(Config{
 		Width:  screenWidth,
 		Height: screenHeight,
@@ -47,10 +44,6 @@ func main() {
 		},
 	})
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	if err := game.assignKeys(); err != nil {
 		log.Fatal(err)
 	}
 

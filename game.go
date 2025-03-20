@@ -41,6 +41,9 @@ type Config struct {
 }
 
 func NewGame(config Config) (*Game, error) {
+	ebiten.SetWindowTitle("Hello, World!")
+	ebiten.SetWindowSize(int(config.Width), int(config.Height))
+
 	player, err := NewPlayer(
 		config.Player.Images.Left,
 		config.Player.Images.Right,
