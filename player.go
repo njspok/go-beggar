@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 const (
@@ -27,44 +26,14 @@ const (
 	Died
 )
 
-func NewPlayer(left, right, back, front, sleep, die string, w, h float64) (*Player, error) {
-	leftImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(left))
-	if err != nil {
-		return nil, err
-	}
-
-	rightImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(right))
-	if err != nil {
-		return nil, err
-	}
-
-	backImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(back))
-	if err != nil {
-		return nil, err
-	}
-
-	frontImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(front))
-	if err != nil {
-		return nil, err
-	}
-
-	sleepImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(sleep))
-	if err != nil {
-		return nil, err
-	}
-
-	dieImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(die))
-	if err != nil {
-		return nil, err
-	}
-
+func NewPlayer(left, right, back, front, sleep, die *ebiten.Image, w, h float64) (*Player, error) {
 	return &Player{
-		leftImage:  leftImage,
-		rightImage: rightImage,
-		backImage:  backImage,
-		frontImage: frontImage,
-		sleepImage: sleepImage,
-		dieImage:   dieImage,
+		leftImage:  left,
+		rightImage: right,
+		backImage:  back,
+		frontImage: front,
+		sleepImage: sleep,
+		dieImage:   die,
 		direction:  Right,
 		xpos:       0,
 		ypos:       0,

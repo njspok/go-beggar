@@ -57,13 +57,27 @@ func NewGame(config Config) (*Game, error) {
 	ebiten.SetWindowTitle("Hello, World!")
 	ebiten.SetWindowSize(int(config.Width), int(config.Height))
 
-	player, err := NewPlayer(
+	assets := NewAssets()
+
+	err := assets.LoadImages([]string{
 		config.Player.Images.Left,
 		config.Player.Images.Right,
 		config.Player.Images.Back,
 		config.Player.Images.Front,
 		config.Player.Images.Sleep,
 		config.Player.Images.Die,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	player, err := NewPlayer(
+		assets.Image(config.Player.Images.Left),
+		assets.Image(config.Player.Images.Right),
+		assets.Image(config.Player.Images.Back),
+		assets.Image(config.Player.Images.Front),
+		assets.Image(config.Player.Images.Sleep),
+		assets.Image(config.Player.Images.Die),
 		config.Player.Width,
 		config.Player.Height,
 	)
@@ -71,7 +85,6 @@ func NewGame(config Config) (*Game, error) {
 		return nil, err
 	}
 
-	assets := NewAssets()
 	err = assets.LoadImages([]string{"food.png", "bomb.png", "rock.png"})
 	if err != nil {
 		return nil, err
