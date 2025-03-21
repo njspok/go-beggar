@@ -95,12 +95,10 @@ func NewGame(config Config) (*Game, error) {
 		objs = append(objs, obj)
 	}
 
-	f, err := os.ReadFile(assetFilePath("mplus-1p-regular.ttf"))
+	font, err := loadFont("mplus-1p-regular.ttf")
 	if err != nil {
 		return nil, err
 	}
-
-	font, err := text.NewGoTextFaceSource(bytes.NewReader(f))
 
 	g := &Game{
 		height: config.Height,
@@ -214,4 +212,12 @@ func (g *Game) printMessage(screen *ebiten.Image, str string) {
 		Source: g.font,
 		Size:   24,
 	}, op)
+}
+
+func loadFont(file string) (*text.GoTextFaceSource, error) {
+	f, err := os.ReadFile(assetFilePath(file))
+	if err != nil {
+		return nil, err
+	}
+	return text.NewGoTextFaceSource(bytes.NewReader(f))
 }
