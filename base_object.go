@@ -6,7 +6,7 @@ import (
 )
 
 func NewBaseObject(image string, w, h float64) (*BaseObject, error) {
-	img, _, err := ebitenutil.NewImageFromFile(imagePath(image))
+	img, _, err := ebitenutil.NewImageFromFile(assetFilePath(image))
 	if err != nil {
 		return nil, err
 	}

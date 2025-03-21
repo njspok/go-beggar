@@ -1,14 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
-
-func imagePath(name string) string {
-	return fmt.Sprintf("assets/%s", name)
-}
 
 const (
 	step        = 5
@@ -33,32 +28,32 @@ const (
 )
 
 func NewPlayer(left, right, back, front, sleep, die string, w, h float64) (*Player, error) {
-	leftImage, _, err := ebitenutil.NewImageFromFile(imagePath(left))
+	leftImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(left))
 	if err != nil {
 		return nil, err
 	}
 
-	rightImage, _, err := ebitenutil.NewImageFromFile(imagePath(right))
+	rightImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(right))
 	if err != nil {
 		return nil, err
 	}
 
-	backImage, _, err := ebitenutil.NewImageFromFile(imagePath(back))
+	backImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(back))
 	if err != nil {
 		return nil, err
 	}
 
-	frontImage, _, err := ebitenutil.NewImageFromFile(imagePath(front))
+	frontImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(front))
 	if err != nil {
 		return nil, err
 	}
 
-	sleepImage, _, err := ebitenutil.NewImageFromFile(imagePath(sleep))
+	sleepImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(sleep))
 	if err != nil {
 		return nil, err
 	}
 
-	dieImage, _, err := ebitenutil.NewImageFromFile(imagePath(die))
+	dieImage, _, err := ebitenutil.NewImageFromFile(assetFilePath(die))
 	if err != nil {
 		return nil, err
 	}

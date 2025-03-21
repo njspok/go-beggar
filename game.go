@@ -95,7 +95,8 @@ func NewGame(config Config) (*Game, error) {
 		objs = append(objs, obj)
 	}
 
-	f, err := os.ReadFile("assets/mplus-1p-regular.ttf")
+	//f, err := os.ReadFile("assets/mplus-1p-regular.ttf")
+	f, err := os.ReadFile(assetFilePath("mplus-1p-regular.ttf"))
 	if err != nil {
 		return nil, err
 	}
