@@ -1,6 +1,8 @@
 package main
 
-func NewRock(image string, w, h float64) (*Rock, error) {
+import "github.com/hajimehoshi/ebiten/v2"
+
+func NewRock(image *ebiten.Image, w, h float64) (*Rock, error) {
 	obj, err := NewBaseObject(image, w, h)
 	if err != nil {
 		return nil, err

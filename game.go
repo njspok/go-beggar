@@ -71,6 +71,12 @@ func NewGame(config Config) (*Game, error) {
 		return nil, err
 	}
 
+	assets := NewAssets()
+	err = assets.LoadImages([]string{"food.png", "bomb.png", "rock.png"})
+	if err != nil {
+		return nil, err
+	}
+
 	var objs []Object
 	for _, pos := range config.Objects {
 		var obj Object
@@ -78,11 +84,11 @@ func NewGame(config Config) (*Game, error) {
 
 		switch pos.Type {
 		case "food":
-			obj, err = NewFood(pos.Type+".png", pos.W, pos.H)
+			obj, err = NewFood(assets.Image(pos.Type+".png"), pos.W, pos.H)
 		case "bomb":
-			obj, err = NewBomb(pos.Type+".png", pos.W, pos.H)
+			obj, err = NewBomb(assets.Image(pos.Type+".png"), pos.W, pos.H)
 		case "rock":
-			obj, err = NewRock(pos.Type+".png", pos.W, pos.H)
+			obj, err = NewRock(assets.Image(pos.Type+".png"), pos.W, pos.H)
 		default:
 			return nil, errors.New("invalid type object")
 		}
@@ -101,6 +107,7 @@ func NewGame(config Config) (*Game, error) {
 	}
 
 	g := &Game{
+		assets: assets,
 		height: config.Height,
 		width:  config.Width,
 		keyMap: make(map[ebiten.Key]func()),
@@ -119,6 +126,7 @@ func NewGame(config Config) (*Game, error) {
 }
 
 type Game struct {
+	assets *Assets
 	player *Player
 	objs   []Object
 	keyMap map[ebiten.Key]func()

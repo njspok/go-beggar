@@ -1,6 +1,8 @@
 package main
 
-func NewFood(image string, w, h float64) (*Food, error) {
+import "github.com/hajimehoshi/ebiten/v2"
+
+func NewFood(image *ebiten.Image, w, h float64) (*Food, error) {
 	obj, err := NewBaseObject(image, w, h)
 	if err != nil {
 		return nil, err

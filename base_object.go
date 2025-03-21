@@ -2,15 +2,9 @@ package main
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
-func NewBaseObject(image string, w, h float64) (*BaseObject, error) {
-	img, _, err := ebitenutil.NewImageFromFile(assetFilePath(image))
-	if err != nil {
-		return nil, err
-	}
-
+func NewBaseObject(img *ebiten.Image, w, h float64) (*BaseObject, error) {
 	return &BaseObject{
 		image:   img,
 		xpos:    0,
