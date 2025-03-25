@@ -14,6 +14,7 @@ type Object interface {
 	Draw(screen *ebiten.Image)
 	Collision(player *Player)
 	SetPosition(x, y float64)
+	Do()
 }
 
 type PlayerImagesConfig struct {
@@ -85,7 +86,12 @@ func NewGame(config Config) (*Game, error) {
 		return nil, err
 	}
 
-	err = assets.LoadImages([]string{"food.png", "bomb.png", "rock.png"})
+	err = assets.LoadImages([]string{
+		"food.png",
+		"bomb.png",
+		"rock.png",
+		"bot.png",
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -102,6 +108,20 @@ func NewGame(config Config) (*Game, error) {
 			obj, err = NewBomb(assets.Image(pos.Type+".png"), pos.W, pos.H)
 		case "rock":
 			obj, err = NewRock(assets.Image(pos.Type+".png"), pos.W, pos.H)
+		case "bot":
+			obj, err = NewBot(
+				assets.Image(pos.Type+".png"),
+				pos.W,
+				pos.H,
+				Point{
+					X: 400,
+					Y: 0,
+				},
+				Point{
+					X: 900,
+					Y: 0,
+				},
+			)
 		default:
 			return nil, errors.New("invalid type object")
 		}
@@ -154,6 +174,7 @@ func (g *Game) Update() error {
 	g.checkSceneBorders()
 	g.checkCollision()
 	g.checkGameFinish()
+	g.doObjects()
 
 	return nil
 }
@@ -233,6 +254,12 @@ func (g *Game) printMessage(screen *ebiten.Image, str string) {
 		Source: g.font,
 		Size:   24,
 	}, op)
+}
+
+func (g *Game) doObjects() {
+	for _, obj := range g.objs {
+		obj.Do()
+	}
 }
 
 func loadFont(file string) (*text.GoTextFaceSource, error) {

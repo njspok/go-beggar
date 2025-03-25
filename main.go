@@ -45,6 +45,8 @@ func main() {
 			{Type: "rock", X: 800, Y: 150, W: objectWidth, H: objectHeight},
 			{Type: "rock", X: 100, Y: 500, W: objectWidth, H: objectHeight},
 			{Type: "rock", X: 800, Y: 550, W: objectWidth, H: objectHeight},
+
+			{Type: "bot", X: 0, Y: 0, W: objectWidth, H: objectHeight},
 		},
 	})
 	if err != nil {

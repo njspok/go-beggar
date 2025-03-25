@@ -57,3 +57,5 @@ func (o *BaseObject) Hide() {
 func (o *BaseObject) IsVisible() bool {
 	return o.visible
 }
+
+func (o *BaseObject) Do() {}
