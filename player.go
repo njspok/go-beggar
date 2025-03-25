@@ -6,7 +6,7 @@ import (
 
 const (
 	step        = 5
-	sleepPoints = 3
+	sleepPoints = 4
 )
 
 type Direction int
