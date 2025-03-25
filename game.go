@@ -39,11 +39,19 @@ type ObjectConfig struct {
 	H    float64
 }
 
+type FoodConfig ObjectConfig
+
+type RockConfig ObjectConfig
+
+type BombConfig ObjectConfig
+
+type BotConfig ObjectConfig
+
 type Config struct {
 	Width   float64
 	Height  float64
 	Player  PlayerConfig
-	Objects []ObjectConfig
+	Objects []any
 }
 
 type GameStatus int
@@ -101,18 +109,21 @@ func NewGame(config Config) (*Game, error) {
 		var obj Object
 		var err error
 
-		switch pos.Type {
-		case "food":
-			obj, err = NewFood(assets.Image(pos.Type+".png"), pos.W, pos.H)
-		case "bomb":
-			obj, err = NewBomb(assets.Image(pos.Type+".png"), pos.W, pos.H)
-		case "rock":
-			obj, err = NewRock(assets.Image(pos.Type+".png"), pos.W, pos.H)
-		case "bot":
+		switch p := pos.(type) {
+		case FoodConfig:
+			obj, err = NewFood(assets.Image("food.png"), p.W, p.H)
+			obj.SetPosition(p.X, p.Y)
+		case BombConfig:
+			obj, err = NewBomb(assets.Image("bomb.png"), p.W, p.H)
+			obj.SetPosition(p.X, p.Y)
+		case RockConfig:
+			obj, err = NewRock(assets.Image("rock.png"), p.W, p.H)
+			obj.SetPosition(p.X, p.Y)
+		case BotConfig:
 			obj, err = NewBot(
-				assets.Image(pos.Type+".png"),
-				pos.W,
-				pos.H,
+				assets.Image("bot.png"),
+				p.W,
+				p.H,
 				Point{
 					X: 400,
 					Y: 0,
@@ -130,7 +141,6 @@ func NewGame(config Config) (*Game, error) {
 			return nil, err
 		}
 
-		obj.SetPosition(pos.X, pos.Y)
 		objs = append(objs, obj)
 	}
 
