@@ -143,8 +143,11 @@ func (p *Player) Size() (w, h float64) {
 	return p.width, p.height
 }
 
-func (p *Player) CenterPosition() (x float64, y float64) {
-	return p.xpos + p.width/2, p.ypos + p.height/2
+func (p *Player) CenterPosition() Point {
+	return Point{
+		X: p.xpos + p.width/2,
+		Y: p.ypos + p.height/2,
+	}
 }
 
 func (p *Player) Width() float64 {

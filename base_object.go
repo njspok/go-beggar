@@ -6,9 +6,11 @@ import (
 
 func NewBaseObject(img *ebiten.Image, w, h float64) (*BaseObject, error) {
 	return &BaseObject{
-		image:   img,
-		xpos:    0,
-		ypos:    0,
+		image: img,
+		pos: Point{
+			X: 0,
+			Y: 0,
+		},
 		width:   w,
 		height:  h,
 		visible: true,
@@ -17,8 +19,7 @@ func NewBaseObject(img *ebiten.Image, w, h float64) (*BaseObject, error) {
 
 type BaseObject struct {
 	image   *ebiten.Image
-	xpos    float64
-	ypos    float64
+	pos     Point
 	width   float64
 	height  float64
 	visible bool
@@ -31,23 +32,26 @@ func (o *BaseObject) Draw(screen *ebiten.Image) {
 
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Reset()
-	op.GeoM.Translate(o.xpos, o.ypos)
+	op.GeoM.Translate(o.pos.X, o.pos.Y)
 	screen.DrawImage(o.image, op)
 }
 
 func (o *BaseObject) SetPosition(x, y float64) {
-	o.xpos = x
-	o.ypos = y
+	o.pos.X = x
+	o.pos.Y = y
 }
 
-func (o *BaseObject) CenterPosition() (float64, float64) {
-	return o.xpos + o.width/2, o.ypos + o.height/2
+func (o *BaseObject) CenterPosition() Point {
+	return Point{
+		X: o.pos.X + o.width/2,
+		Y: o.pos.Y + o.height/2,
+	}
 }
 
 func (o *BaseObject) Distance(p *Player) float64 {
-	x1, y1 := p.CenterPosition()
-	x2, y2 := o.CenterPosition()
-	return Distance(x1, y1, x2, y2)
+	start := p.CenterPosition()
+	end := o.CenterPosition()
+	return Distance(start, end)
 }
 
 func (o *BaseObject) Hide() {

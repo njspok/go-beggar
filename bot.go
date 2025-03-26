@@ -39,37 +39,37 @@ func (b *Bot) Collision(p *Player) {
 }
 
 func (b *Bot) Do() {
-	b.xpos, b.ypos = moveTowards(b.xpos, b.ypos, b.target.X, b.target.Y, botStep)
+	b.pos.X, b.pos.Y = moveTowards(b.pos, b.target, botStep)
 
-	if b.xpos == b.end.X && b.ypos == b.end.Y {
+	if b.pos == b.end {
 		b.target = b.start
 	}
 
-	if b.xpos == b.start.X && b.ypos == b.start.Y {
+	if b.pos == b.start {
 		b.target = b.end
 	}
 }
 
-func moveTowards(x1, y1, x2, y2, d float64) (float64, float64) {
-	dx := x2 - x1
-	dy := y2 - y1
+func moveTowards(start, end Point, step float64) (float64, float64) {
+	dx := end.X - start.X
+	dy := end.Y - start.Y
 
 	dist := math.Sqrt(dx*dx + dy*dy)
 
-	if dist <= d {
-		return x2, y2
+	if dist <= step {
+		return end.X, end.Y
 	}
 
 	// вычислаем количество шагов в проекциях
-	count := dist / d
+	count := dist / step
 
 	// вычисляем шаги в каждом координате
 	stepX := dx / count
 	stepY := dy / count
 
 	// Вычисляем новые координаты
-	newX := x1 + stepX
-	newY := y1 + stepY
+	newX := start.X + stepX
+	newY := start.Y + stepY
 
 	return newX, newY
 }

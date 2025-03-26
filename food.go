@@ -17,10 +17,10 @@ type Food struct {
 	*BaseObject
 }
 
-func (e *Food) Collision(p *Player) {
-	if e.Distance(p) < collisionDistance {
-		if e.IsVisible() {
-			e.Hide()
+func (f *Food) Collision(p *Player) {
+	if f.Distance(p) < collisionDistance {
+		if f.IsVisible() {
+			f.Hide()
 			p.AddPoint()
 		}
 	}
