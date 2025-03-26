@@ -39,8 +39,10 @@ func NewPlayer(left, right, back, front, sleep, die *ebiten.Image, w, h float64)
 			X: 0,
 			Y: 0,
 		},
-		prevX:  0,
-		prevY:  0,
+		prev: Point{
+			X: 0,
+			Y: 0,
+		},
 		width:  w,
 		height: h,
 		status: Awake,
@@ -60,10 +62,8 @@ type Player struct {
 
 	direction Direction
 
-	pos Point
-
-	prevX float64
-	prevY float64
+	pos  Point
+	prev Point
 
 	width  float64
 	height float64
@@ -86,7 +86,7 @@ func (p *Player) MoveLeft() {
 	}
 
 	p.direction = Left
-	p.prevX = p.pos.X
+	p.prev.X = p.pos.X
 	p.pos.X -= step
 }
 
@@ -96,7 +96,7 @@ func (p *Player) MoveRight() {
 	}
 
 	p.direction = Right
-	p.prevX = p.pos.X
+	p.prev.X = p.pos.X
 	p.pos.X += step
 }
 
@@ -106,7 +106,7 @@ func (p *Player) MoveUp() {
 	}
 
 	p.direction = Up
-	p.prevY = p.pos.Y
+	p.prev.Y = p.pos.Y
 	p.pos.Y -= step
 }
 
@@ -116,7 +116,7 @@ func (p *Player) MoveDown() {
 	}
 
 	p.direction = Down
-	p.prevY = p.pos.Y
+	p.prev.Y = p.pos.Y
 	p.pos.Y += step
 }
 
@@ -125,8 +125,8 @@ func (p *Player) StepBack() {
 		return
 	}
 
-	p.pos.X = p.prevX
-	p.pos.Y = p.prevY
+	p.pos.X = p.prev.X
+	p.pos.Y = p.prev.Y
 }
 
 func (p *Player) EndPosition() (x float64, y float64) {
