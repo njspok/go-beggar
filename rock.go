@@ -18,10 +18,10 @@ type Rock struct {
 }
 
 func (r *Rock) Collision(p *Player) {
-	x1, y1 := p.Position()
+	ppos := p.Position()
 	w1, h1 := p.Size()
 
-	if IsCollision(x1, y1, w1, h1, r.pos.X, r.pos.Y, r.width, r.height) {
+	if IsCollision(ppos.X, ppos.Y, w1, h1, r.pos.X, r.pos.Y, r.width, r.height) {
 		p.StepBack()
 	}
 }

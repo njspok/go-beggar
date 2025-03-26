@@ -129,16 +129,15 @@ func (p *Player) StepBack() {
 	p.pos.Y = p.prev.Y
 }
 
-func (p *Player) EndPosition() (x float64, y float64) {
-	x = p.pos.X + p.width
-	y = p.pos.Y + p.height
-	return
+func (p *Player) EndPosition() Point {
+	return Point{
+		X: p.pos.X + p.width,
+		Y: p.pos.Y + p.height,
+	}
 }
 
-func (p *Player) Position() (x float64, y float64) {
-	x = p.pos.X
-	y = p.pos.Y
-	return
+func (p *Player) Position() Point {
+	return p.pos
 }
 
 func (p *Player) Size() (w, h float64) {

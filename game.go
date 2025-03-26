@@ -228,13 +228,13 @@ func (g *Game) handleKeys() {
 }
 
 func (g *Game) checkSceneBorders() {
-	x, y := g.player.Position()
-	if x < 0 || y < 0 {
+	pos := g.player.Position()
+	if pos.X < 0 || pos.Y < 0 {
 		g.player.StepBack()
 	}
 
-	ex, ey := g.player.EndPosition()
-	if ex > g.width || ey > g.height {
+	endPos := g.player.EndPosition()
+	if endPos.X > g.width || endPos.Y > g.height {
 		g.player.StepBack()
 	}
 }
