@@ -32,11 +32,10 @@ type PlayerConfig struct {
 }
 
 type ObjectConfig struct {
-	Type string
-	X    float64
-	Y    float64
-	W    float64
-	H    float64
+	X float64
+	Y float64
+	W float64
+	H float64
 }
 
 type FoodConfig ObjectConfig
@@ -45,7 +44,14 @@ type RockConfig ObjectConfig
 
 type BombConfig ObjectConfig
 
-type BotConfig ObjectConfig
+type BotConfig struct {
+	W      float64
+	H      float64
+	StartX float64
+	StartY float64
+	EndX   float64
+	EndY   float64
+}
 
 type Config struct {
 	Width   float64
@@ -125,12 +131,12 @@ func NewGame(config Config) (*Game, error) {
 				p.W,
 				p.H,
 				Point{
-					X: 400,
-					Y: 0,
+					X: p.StartX,
+					Y: p.StartY,
 				},
 				Point{
-					X: 900,
-					Y: 0,
+					X: p.EndX,
+					Y: p.EndY,
 				},
 			)
 		default:
