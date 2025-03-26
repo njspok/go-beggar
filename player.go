@@ -35,14 +35,16 @@ func NewPlayer(left, right, back, front, sleep, die *ebiten.Image, w, h float64)
 		sleepImage: sleep,
 		dieImage:   die,
 		direction:  Right,
-		xpos:       0,
-		ypos:       0,
-		prevX:      0,
-		prevY:      0,
-		width:      w,
-		height:     h,
-		status:     Awake,
-		points:     0,
+		pos: Point{
+			X: 0,
+			Y: 0,
+		},
+		prevX:  0,
+		prevY:  0,
+		width:  w,
+		height: h,
+		status: Awake,
+		points: 0,
 	}, nil
 }
 
@@ -58,8 +60,8 @@ type Player struct {
 
 	direction Direction
 
-	xpos  float64
-	ypos  float64
+	pos Point
+
 	prevX float64
 	prevY float64
 
@@ -74,7 +76,7 @@ type Player struct {
 func (p *Player) Draw(screen *ebiten.Image) {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Reset()
-	op.GeoM.Translate(p.xpos, p.ypos)
+	op.GeoM.Translate(p.pos.X, p.pos.Y)
 	screen.DrawImage(p.image(), op)
 }
 
@@ -84,8 +86,8 @@ func (p *Player) MoveLeft() {
 	}
 
 	p.direction = Left
-	p.prevX = p.xpos
-	p.xpos -= step
+	p.prevX = p.pos.X
+	p.pos.X -= step
 }
 
 func (p *Player) MoveRight() {
@@ -94,8 +96,8 @@ func (p *Player) MoveRight() {
 	}
 
 	p.direction = Right
-	p.prevX = p.xpos
-	p.xpos += step
+	p.prevX = p.pos.X
+	p.pos.X += step
 }
 
 func (p *Player) MoveUp() {
@@ -104,8 +106,8 @@ func (p *Player) MoveUp() {
 	}
 
 	p.direction = Up
-	p.prevY = p.ypos
-	p.ypos -= step
+	p.prevY = p.pos.Y
+	p.pos.Y -= step
 }
 
 func (p *Player) MoveDown() {
@@ -114,8 +116,8 @@ func (p *Player) MoveDown() {
 	}
 
 	p.direction = Down
-	p.prevY = p.ypos
-	p.ypos += step
+	p.prevY = p.pos.Y
+	p.pos.Y += step
 }
 
 func (p *Player) StepBack() {
@@ -123,19 +125,19 @@ func (p *Player) StepBack() {
 		return
 	}
 
-	p.xpos = p.prevX
-	p.ypos = p.prevY
+	p.pos.X = p.prevX
+	p.pos.Y = p.prevY
 }
 
 func (p *Player) EndPosition() (x float64, y float64) {
-	x = p.xpos + p.width
-	y = p.ypos + p.height
+	x = p.pos.X + p.width
+	y = p.pos.Y + p.height
 	return
 }
 
 func (p *Player) Position() (x float64, y float64) {
-	x = p.xpos
-	y = p.ypos
+	x = p.pos.X
+	y = p.pos.Y
 	return
 }
 
@@ -145,8 +147,8 @@ func (p *Player) Size() (w, h float64) {
 
 func (p *Player) CenterPosition() Point {
 	return Point{
-		X: p.xpos + p.width/2,
-		Y: p.ypos + p.height/2,
+		X: p.pos.X + p.width/2,
+		Y: p.pos.Y + p.height/2,
 	}
 }
 
