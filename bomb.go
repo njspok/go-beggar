@@ -2,7 +2,7 @@ package main
 
 import "github.com/hajimehoshi/ebiten/v2"
 
-const collisionDistance = 50
+const collisionDistance = 100
 
 func NewBomb(image *ebiten.Image, w, h float64) (*Bomb, error) {
 	obj, err := NewBaseObject(image, w, h)

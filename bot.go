@@ -33,7 +33,9 @@ type Bot struct {
 }
 
 func (b *Bot) Collision(p *Player) {
-	// todo process collision
+	if b.Distance(p) < collisionDistance {
+		p.Die()
+	}
 }
 
 func (b *Bot) Do() {
