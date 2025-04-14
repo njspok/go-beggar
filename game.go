@@ -123,7 +123,7 @@ func NewGame(config Config) (*Game, error) {
 		return nil, err
 	}
 
-	level, err := NewLevel(config.Level, assets)
+	level, err := NewLevel(config.Level, assets, player)
 	if err != nil {
 		return nil, err
 	}
@@ -236,7 +236,8 @@ func (g *Game) checkGameFinish() {
 	switch {
 	case g.player.IsDied():
 		g.status = GameOver
-	case g.player.IsSleep():
+	case g.currentLevel().IsFinish():
+		g.player.Sleep()
 		g.status = GameWin
 	}
 }

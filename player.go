@@ -5,8 +5,7 @@ import (
 )
 
 const (
-	step       = 5
-	sleepScore = 4
+	step = 5
 )
 
 type Direction int
@@ -52,8 +51,6 @@ func NewPlayer(
 }
 
 type Player struct {
-	Object
-
 	leftImage  *ebiten.Image
 	rightImage *ebiten.Image
 	backImage  *ebiten.Image
@@ -137,6 +134,11 @@ func (p *Player) EndPosition() Point {
 	}
 }
 
+func (p *Player) SetPosition(x, y float64) {
+	p.pos.X = x
+	p.pos.Y = y
+}
+
 func (p *Player) Position() Point {
 	return p.pos
 }
@@ -178,9 +180,10 @@ func (p *Player) IsDied() bool {
 
 func (p *Player) IncScore() {
 	p.score++
-	if p.score == sleepScore {
-		p.Sleep()
-	}
+}
+
+func (p *Player) Score() int {
+	return p.score
 }
 
 func (p *Player) image() *ebiten.Image {

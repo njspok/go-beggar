@@ -1,9 +1,12 @@
 package main
 
-import "errors"
+import (
+	"errors"
+)
 
-func NewLevel(config LevelConfig, assets *Assets) (*Level, error) {
+func NewLevel(config LevelConfig, assets *Assets, player *Player) (*Level, error) {
 	var objs []Object
+	var foods int
 	for _, pos := range config.Objects {
 		var obj Object
 		var err error
@@ -12,6 +15,7 @@ func NewLevel(config LevelConfig, assets *Assets) (*Level, error) {
 		case FoodConfig:
 			obj, err = NewFood(assets.Image("food.png"), p.W, p.H)
 			obj.SetPosition(p.X, p.Y)
+			foods++
 		case BombConfig:
 			obj, err = NewBomb(assets.Image("bomb.png"), p.W, p.H)
 			obj.SetPosition(p.X, p.Y)
@@ -45,9 +49,17 @@ func NewLevel(config LevelConfig, assets *Assets) (*Level, error) {
 
 	return &Level{
 		Objects: objs,
+		player:  player,
+		foods:   foods,
 	}, nil
 }
 
 type Level struct {
 	Objects []Object
+	player  *Player
+	foods   int
+}
+
+func (l *Level) IsFinish() bool {
+	return l.player.Score() == l.foods
 }
