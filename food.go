@@ -21,7 +21,7 @@ func (f *Food) Collision(p *Player) {
 	if f.Distance(p) < collisionDistance {
 		if f.IsVisible() {
 			f.Hide()
-			p.AddPoint()
+			p.IncScore()
 		}
 	}
 }
