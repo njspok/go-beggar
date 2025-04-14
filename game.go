@@ -53,11 +53,15 @@ type BotConfig struct {
 	EndY   float64
 }
 
-type Config struct {
-	Width   float64
-	Height  float64
-	Player  PlayerConfig
+type LevelConfig struct {
 	Objects []any
+}
+
+type Config struct {
+	Width  float64
+	Height float64
+	Player PlayerConfig
+	Level  LevelConfig
 }
 
 type GameStatus int
@@ -115,7 +119,7 @@ func NewGame(config Config) (*Game, error) {
 	}
 
 	var objs []Object
-	for _, pos := range config.Objects {
+	for _, pos := range config.Level.Objects {
 		var obj Object
 		var err error
 
