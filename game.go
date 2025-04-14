@@ -87,6 +87,10 @@ func NewGame(config Config) (*Game, error) {
 	}
 
 	player, err := NewPlayer(
+		Point{
+			X: 0,
+			Y: 0,
+		},
 		assets.Image(config.Player.Images.Left),
 		assets.Image(config.Player.Images.Right),
 		assets.Image(config.Player.Images.Back),

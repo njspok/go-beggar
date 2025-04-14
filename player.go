@@ -26,7 +26,11 @@ const (
 	Died
 )
 
-func NewPlayer(left, right, back, front, sleep, die *ebiten.Image, w, h float64) (*Player, error) {
+func NewPlayer(
+	pos Point,
+	left, right, back, front, sleep, die *ebiten.Image,
+	w, h float64,
+) (*Player, error) {
 	return &Player{
 		leftImage:  left,
 		rightImage: right,
@@ -35,10 +39,7 @@ func NewPlayer(left, right, back, front, sleep, die *ebiten.Image, w, h float64)
 		sleepImage: sleep,
 		dieImage:   die,
 		direction:  Right,
-		pos: Point{
-			X: 0,
-			Y: 0,
-		},
+		pos:        pos,
 		prev: Point{
 			X: 0,
 			Y: 0,
