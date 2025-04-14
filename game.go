@@ -54,7 +54,13 @@ type BotConfig struct {
 }
 
 type LevelConfig struct {
+	Player  PlayerLevelConfig
 	Objects []any
+}
+
+type PlayerLevelConfig struct {
+	X float64
+	Y float64
 }
 
 type Config struct {
@@ -92,8 +98,8 @@ func NewGame(config Config) (*Game, error) {
 
 	player, err := NewPlayer(
 		Point{
-			X: 0,
-			Y: 0,
+			X: config.Level.Player.X,
+			Y: config.Level.Player.Y,
 		},
 		assets.Image(config.Player.Images.Left),
 		assets.Image(config.Player.Images.Right),
