@@ -33,6 +33,7 @@ func main() {
 				Die:   "gopher-die.png",
 			},
 		},
+		// todo change to levels
 		Level: LevelConfig{
 			Player: PlayerLevelConfig{
 				X: 0,
