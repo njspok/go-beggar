@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"errors"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
@@ -124,44 +123,9 @@ func NewGame(config Config) (*Game, error) {
 		return nil, err
 	}
 
-	var objs []Object
-	for _, pos := range config.Level.Objects {
-		var obj Object
-		var err error
-
-		switch p := pos.(type) {
-		case FoodConfig:
-			obj, err = NewFood(assets.Image("food.png"), p.W, p.H)
-			obj.SetPosition(p.X, p.Y)
-		case BombConfig:
-			obj, err = NewBomb(assets.Image("bomb.png"), p.W, p.H)
-			obj.SetPosition(p.X, p.Y)
-		case RockConfig:
-			obj, err = NewRock(assets.Image("rock.png"), p.W, p.H)
-			obj.SetPosition(p.X, p.Y)
-		case BotConfig:
-			obj, err = NewBot(
-				assets.Image("bot.png"),
-				p.W,
-				p.H,
-				Point{
-					X: p.StartX,
-					Y: p.StartY,
-				},
-				Point{
-					X: p.EndX,
-					Y: p.EndY,
-				},
-			)
-		default:
-			return nil, errors.New("invalid type object")
-		}
-
-		if err != nil {
-			return nil, err
-		}
-
-		objs = append(objs, obj)
+	level, err := NewLevel(config.Level, assets)
+	if err != nil {
+		return nil, err
 	}
 
 	font, err := loadFont("mplus-1p-regular.ttf")
@@ -175,7 +139,7 @@ func NewGame(config Config) (*Game, error) {
 		width:  config.Width,
 		keyMap: make(map[ebiten.Key]func()),
 		player: player,
-		levels: [][]Object{objs},
+		levels: []*Level{level},
 		status: GameRunning,
 		font:   font,
 	}
@@ -191,7 +155,7 @@ func NewGame(config Config) (*Game, error) {
 type Game struct {
 	assets *Assets
 	player *Player
-	levels [][]Object
+	levels []*Level
 	keyMap map[ebiten.Key]func()
 	width  float64
 	height float64
@@ -211,7 +175,7 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(colornames.Black)
-	for _, obj := range g.currentLevel() {
+	for _, obj := range g.currentLevel().Objects {
 		obj.Draw(screen)
 	}
 	g.player.Draw(screen)
@@ -254,7 +218,7 @@ func (g *Game) checkSceneBorders() {
 }
 
 func (g *Game) checkCollision() {
-	for _, obj := range g.currentLevel() {
+	for _, obj := range g.currentLevel().Objects {
 		obj.Collision(g.player)
 	}
 }
@@ -287,12 +251,12 @@ func (g *Game) printMessage(screen *ebiten.Image, str string) {
 }
 
 func (g *Game) doObjects() {
-	for _, obj := range g.currentLevel() {
+	for _, obj := range g.currentLevel().Objects {
 		obj.Do()
 	}
 }
 
-func (g *Game) currentLevel() []Object {
+func (g *Game) currentLevel() *Level {
 	return g.levels[0]
 }
 
