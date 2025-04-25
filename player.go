@@ -39,14 +39,11 @@ func NewPlayer(
 		dieImage:   die,
 		direction:  Right,
 		pos:        pos,
-		prev: Point{
-			X: 0,
-			Y: 0,
-		},
-		width:  w,
-		height: h,
-		status: Awake,
-		score:  0,
+		prev:       pos,
+		width:      w,
+		height:     h,
+		status:     Awake,
+		score:      0,
 	}, nil
 }
 

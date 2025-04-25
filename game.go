@@ -66,7 +66,7 @@ type Config struct {
 	Width  float64
 	Height float64
 	Player PlayerConfig
-	Level  LevelConfig
+	Levels []LevelConfig
 }
 
 type GameStatus int
@@ -83,6 +83,7 @@ func NewGame(config Config) (*Game, error) {
 
 	assets := NewAssets()
 
+	// player images to assets
 	err := assets.LoadImages([]string{
 		config.Player.Images.Left,
 		config.Player.Images.Right,
@@ -95,11 +96,24 @@ func NewGame(config Config) (*Game, error) {
 		return nil, err
 	}
 
+	// object images to assets
+	err = assets.LoadImages([]string{
+		"food.png",
+		"bomb.png",
+		"rock.png",
+		"bot.png",
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	font, err := loadFont("mplus-1p-regular.ttf")
+	if err != nil {
+		return nil, err
+	}
+
 	player, err := NewPlayer(
-		Point{
-			X: config.Level.Player.X,
-			Y: config.Level.Player.Y,
-		},
+		Point{X: 0, Y: 0},
 		assets.Image(config.Player.Images.Left),
 		assets.Image(config.Player.Images.Right),
 		assets.Image(config.Player.Images.Back),
@@ -113,24 +127,13 @@ func NewGame(config Config) (*Game, error) {
 		return nil, err
 	}
 
-	err = assets.LoadImages([]string{
-		"food.png",
-		"bomb.png",
-		"rock.png",
-		"bot.png",
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	level, err := NewLevel(config.Level, assets, player)
-	if err != nil {
-		return nil, err
-	}
-
-	font, err := loadFont("mplus-1p-regular.ttf")
-	if err != nil {
-		return nil, err
+	var levels []*Level
+	for _, levelCfg := range config.Levels {
+		level, err := NewLevel(levelCfg, assets, player)
+		if err != nil {
+			return nil, err
+		}
+		levels = append(levels, level)
 	}
 
 	g := &Game{
@@ -139,7 +142,7 @@ func NewGame(config Config) (*Game, error) {
 		width:  config.Width,
 		keyMap: make(map[ebiten.Key]func()),
 		player: player,
-		levels: []*Level{level},
+		levels: levels,
 		status: GameRunning,
 		font:   font,
 	}

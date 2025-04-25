@@ -33,32 +33,33 @@ func main() {
 				Die:   "gopher-die.png",
 			},
 		},
-		// todo change to levels
-		Level: LevelConfig{
-			Player: PlayerLevelConfig{
-				X: 0,
-				Y: 0,
-			},
-			Objects: []any{
-				FoodConfig{X: 500, Y: 0, W: objectWidth, H: objectHeight},
-				FoodConfig{X: 0, Y: 300, W: objectWidth, H: objectHeight},
-				FoodConfig{X: 900, Y: 300, W: objectWidth, H: objectHeight},
-				FoodConfig{X: 300, Y: 600, W: objectWidth, H: objectHeight},
+		Levels: []LevelConfig{
+			{
+				Player: PlayerLevelConfig{
+					X: 0,
+					Y: 0,
+				},
+				Objects: []any{
+					FoodConfig{X: 500, Y: 0, W: objectWidth, H: objectHeight},
+					FoodConfig{X: 0, Y: 300, W: objectWidth, H: objectHeight},
+					FoodConfig{X: 900, Y: 300, W: objectWidth, H: objectHeight},
+					FoodConfig{X: 300, Y: 600, W: objectWidth, H: objectHeight},
 
-				BombConfig{X: 500, Y: 300, W: objectWidth, H: objectHeight},
+					BombConfig{X: 500, Y: 300, W: objectWidth, H: objectHeight},
 
-				RockConfig{X: 100, Y: 150, W: objectWidth, H: objectHeight},
-				RockConfig{X: 800, Y: 150, W: objectWidth, H: objectHeight},
-				RockConfig{X: 100, Y: 500, W: objectWidth, H: objectHeight},
-				RockConfig{X: 800, Y: 550, W: objectWidth, H: objectHeight},
+					RockConfig{X: 100, Y: 150, W: objectWidth, H: objectHeight},
+					RockConfig{X: 800, Y: 150, W: objectWidth, H: objectHeight},
+					RockConfig{X: 100, Y: 500, W: objectWidth, H: objectHeight},
+					RockConfig{X: 800, Y: 550, W: objectWidth, H: objectHeight},
 
-				BotConfig{
-					W:      objectWidth,
-					H:      objectHeight,
-					StartX: 200,
-					StartY: 150,
-					EndX:   600,
-					EndY:   150,
+					BotConfig{
+						W:      objectWidth,
+						H:      objectHeight,
+						StartX: 200,
+						StartY: 150,
+						EndX:   600,
+						EndY:   150,
+					},
 				},
 			},
 		},
