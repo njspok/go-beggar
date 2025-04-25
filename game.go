@@ -158,7 +158,7 @@ func NewGame(config Config) (*Game, error) {
 type Game struct {
 	assets *Assets
 	player *Player
-	levels Levels
+	levels *Levels
 	keyMap map[ebiten.Key]func()
 	width  float64
 	height float64
