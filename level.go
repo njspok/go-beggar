@@ -51,15 +51,34 @@ func NewLevel(config LevelConfig, assets *Assets, player *Player) (*Level, error
 		Objects: objs,
 		player:  player,
 		foods:   foods,
+		startPlayerPos: Point{
+			X: config.Player.X,
+			Y: config.Player.Y,
+		},
 	}, nil
 }
 
 type Level struct {
-	Objects []Object
-	player  *Player
-	foods   int
+	Objects        []Object
+	player         *Player
+	startPlayerPos Point
+	foods          int
+	isFinished     bool
 }
 
 func (l *Level) IsFinish() bool {
-	return l.player.Score() == l.foods
+	if l.isFinished {
+		return true
+	}
+
+	if l.player.Score() == l.foods {
+		l.isFinished = true
+	}
+
+	return l.isFinished
+}
+
+func (l *Level) Init() {
+	l.player.SetPosition(l.startPlayerPos)
+	l.player.SetScore(0)
 }

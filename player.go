@@ -131,9 +131,8 @@ func (p *Player) EndPosition() Point {
 	}
 }
 
-func (p *Player) SetPosition(x, y float64) {
-	p.pos.X = x
-	p.pos.Y = y
+func (p *Player) SetPosition(pos Point) {
+	p.pos = pos
 }
 
 func (p *Player) Position() Point {
@@ -204,4 +203,8 @@ func (p *Player) image() *ebiten.Image {
 
 func (p *Player) isCantMove() bool {
 	return p.status == Sleeping || p.status == Died
+}
+
+func (p *Player) SetScore(score int) {
+	p.score = score
 }

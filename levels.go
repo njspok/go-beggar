@@ -12,10 +12,13 @@ func NewLevels() *Levels {
 	}
 }
 
-func (l *Levels) Next() {
-	if l.cur < len(l.list) {
-		l.cur++
+func (l *Levels) Next() bool {
+	if l.cur >= len(l.list)-1 {
+		return false
 	}
+
+	l.cur++
+	return true
 }
 
 func (l *Levels) IsFinished() bool {

@@ -263,7 +263,9 @@ func (g *Game) doObjects() {
 
 func (g *Game) checkLevelFinish() {
 	if g.levels.Current().IsFinish() {
-		g.levels.Next()
+		if g.levels.Next() {
+			g.levels.Current().Init()
+		}
 	}
 }
 
