@@ -71,9 +71,7 @@ func (l *Level) IsFinish() bool {
 		return true
 	}
 
-	if l.player.Score() == l.foods {
-		l.isFinished = true
-	}
+	l.isFinished = l.player.Score() == l.foods
 
 	return l.isFinished
 }
