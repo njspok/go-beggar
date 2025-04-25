@@ -127,13 +127,13 @@ func NewGame(config Config) (*Game, error) {
 		return nil, err
 	}
 
-	var levels []*Level
+	levels := NewLevels()
 	for _, levelCfg := range config.Levels {
 		level, err := NewLevel(levelCfg, assets, player)
 		if err != nil {
 			return nil, err
 		}
-		levels = append(levels, level)
+		levels.Add(level)
 	}
 
 	g := &Game{
@@ -158,7 +158,7 @@ func NewGame(config Config) (*Game, error) {
 type Game struct {
 	assets *Assets
 	player *Player
-	levels []*Level
+	levels Levels
 	keyMap map[ebiten.Key]func()
 	width  float64
 	height float64
@@ -178,7 +178,7 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	screen.Fill(colornames.Black)
-	for _, obj := range g.currentLevel().Objects {
+	for _, obj := range g.levels.Current().Objects {
 		obj.Draw(screen)
 	}
 	g.player.Draw(screen)
@@ -221,7 +221,7 @@ func (g *Game) checkSceneBorders() {
 }
 
 func (g *Game) checkCollision() {
-	for _, obj := range g.currentLevel().Objects {
+	for _, obj := range g.levels.Current().Objects {
 		obj.Collision(g.player)
 	}
 }
@@ -239,7 +239,7 @@ func (g *Game) checkGameFinish() {
 	switch {
 	case g.player.IsDied():
 		g.status = GameOver
-	case g.currentLevel().IsFinish():
+	case g.levels.Current().IsFinish():
 		g.player.Sleep()
 		g.status = GameWin
 	}
@@ -255,13 +255,9 @@ func (g *Game) printMessage(screen *ebiten.Image, str string) {
 }
 
 func (g *Game) doObjects() {
-	for _, obj := range g.currentLevel().Objects {
+	for _, obj := range g.levels.Current().Objects {
 		obj.Do()
 	}
-}
-
-func (g *Game) currentLevel() *Level {
-	return g.levels[0]
 }
 
 func loadFont(file string) (*text.GoTextFaceSource, error) {

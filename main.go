@@ -41,6 +41,15 @@ func main() {
 				},
 				Objects: []any{
 					FoodConfig{X: 500, Y: 0, W: objectWidth, H: objectHeight},
+				},
+			},
+			{
+				Player: PlayerLevelConfig{
+					X: 0,
+					Y: 0,
+				},
+				Objects: []any{
+					FoodConfig{X: 500, Y: 0, W: objectWidth, H: objectHeight},
 					FoodConfig{X: 0, Y: 300, W: objectWidth, H: objectHeight},
 					FoodConfig{X: 900, Y: 300, W: objectWidth, H: objectHeight},
 					FoodConfig{X: 300, Y: 600, W: objectWidth, H: objectHeight},
