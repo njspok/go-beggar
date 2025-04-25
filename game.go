@@ -170,6 +170,7 @@ func (g *Game) Update() error {
 	g.handleKeys()
 	g.checkSceneBorders()
 	g.checkCollision()
+	g.checkLevelFinish()
 	g.checkGameFinish()
 	g.doObjects()
 
@@ -239,7 +240,7 @@ func (g *Game) checkGameFinish() {
 	switch {
 	case g.player.IsDied():
 		g.status = GameOver
-	case g.levels.Current().IsFinish():
+	case g.levels.IsFinished():
 		g.player.Sleep()
 		g.status = GameWin
 	}
@@ -257,6 +258,12 @@ func (g *Game) printMessage(screen *ebiten.Image, str string) {
 func (g *Game) doObjects() {
 	for _, obj := range g.levels.Current().Objects {
 		obj.Do()
+	}
+}
+
+func (g *Game) checkLevelFinish() {
+	if g.levels.Current().IsFinish() {
+		g.levels.Next()
 	}
 }
 
