@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/hajimehoshi/ebiten/v2/text/v2"
+	"os"
 )
 
 func NewAssets() *Assets {
@@ -14,6 +17,7 @@ func NewAssets() *Assets {
 
 type Assets struct {
 	images map[string]*ebiten.Image
+	font   *text.GoTextFaceSource
 }
 
 func (a *Assets) LoadImage(name string) error {
@@ -34,8 +38,27 @@ func (a *Assets) LoadImages(names []string) error {
 	return nil
 }
 
+func (a *Assets) LoadFont(file string) error {
+	f, err := os.ReadFile(assetFilePath(file))
+	if err != nil {
+		return err
+	}
+
+	font, err := text.NewGoTextFaceSource(bytes.NewReader(f))
+	if err != nil {
+		return err
+	}
+
+	a.font = font
+	return nil
+}
+
 func (a *Assets) Image(name string) *ebiten.Image {
 	return a.images[name]
+}
+
+func (a *Assets) Font() *text.GoTextFaceSource {
+	return a.font
 }
 
 func assetFilePath(name string) string {

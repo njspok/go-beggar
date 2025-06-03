@@ -1,12 +1,10 @@
 package main
 
 import (
-	"bytes"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/hajimehoshi/ebiten/v2/text/v2"
 	"golang.org/x/image/colornames"
-	"os"
 )
 
 type Object interface {
@@ -107,7 +105,8 @@ func NewGame(config Config) (*Game, error) {
 		return nil, err
 	}
 
-	font, err := loadFont("mplus-1p-regular.ttf")
+	// load font
+	err = assets.LoadFont("mplus-1p-regular.ttf")
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +143,6 @@ func NewGame(config Config) (*Game, error) {
 		player: player,
 		levels: levels,
 		status: GameRunning,
-		font:   font,
 	}
 
 	err = g.assignKeys()
@@ -162,7 +160,6 @@ type Game struct {
 	keyMap map[ebiten.Key]func()
 	width  float64
 	height float64
-	font   *text.GoTextFaceSource
 	status GameStatus
 }
 
@@ -250,7 +247,7 @@ func (g *Game) printMessage(screen *ebiten.Image, str string) {
 	op := &text.DrawOptions{}
 	op.GeoM.Translate(g.width/2, g.height/2)
 	text.Draw(screen, str, &text.GoTextFace{
-		Source: g.font,
+		Source: g.assets.Font(),
 		Size:   24,
 	}, op)
 }
@@ -267,12 +264,4 @@ func (g *Game) checkLevelFinish() {
 			g.levels.Current().Init()
 		}
 	}
-}
-
-func loadFont(file string) (*text.GoTextFaceSource, error) {
-	f, err := os.ReadFile(assetFilePath(file))
-	if err != nil {
-		return nil, err
-	}
-	return text.NewGoTextFaceSource(bytes.NewReader(f))
 }
